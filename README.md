@@ -28,9 +28,6 @@ If you use this workflow in a paper, don't forget to give credits to the authors
 
 ## Workflow overview
 
-TODO: include DAG.
----
-
 This workflow is a best-practice workflow for the preprocessing of short read sequencing data in bacteria. The workflow is built using [snakemake](https://snakemake.readthedocs.io/en/stable/) and consists of the following steps:
 
 1. Obtain genome database in `fasta` and `gff` format (`python`, [NCBI Datasets](https://www.ncbi.nlm.nih.gov/datasets/docs/v2/))
@@ -43,6 +40,10 @@ This workflow is a best-practice workflow for the preprocessing of short read se
 6. Sort and index aligned rnaseq data (`samtools`)
 7. Deduplicate reads by unique molecular identifier (UMI, `umi_tools`)
 8. Generate summary report for all processing steps (`MultiQC`)
+
+---
+
+<img src="resources/images/dag.png" align="center" />
 
 ## Installation
 
@@ -114,7 +115,7 @@ Currently, we support example configurations for three different sequencing prot
 To run the workflow from command line, change the working directory.
 
 ``` bash
-cd path/to/snakemake-bacterial-rnaseq-preprocessing
+cd snakemake-bacterial-rnaseq-preprocessing
 ```
 
 Adjust options in the default config file `config/config.yml`. Before running the entire workflow, you can perform a dry run using:

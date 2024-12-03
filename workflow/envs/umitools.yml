@@ -1,0 +1,8 @@
+name: umitools
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - umi_tools=1.1.5
+  - samtools=1.20
+  - dnaio=1.2.2

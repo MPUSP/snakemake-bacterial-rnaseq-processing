@@ -1,4 +1,4 @@
-samplesheet: "config/samplesheet/samples_mpusp_custom.tsv"
+samplesheet: "config/samplesheet/samples.tsv"
 libtype: "forward"
 
 get_genome:
@@ -14,19 +14,11 @@ get_genome:
       "Protein Homology": "CDS"
     ]
 
-umi_extraction:
-  method: "regex"
-  method: "regex"
-  pattern: "^(?P<umi_0>{.{3}[ATG]C[ATG].{3}[ATC]G[ATC]N.{3}T})"
-umi_dedup:
-  [
-    "--edit-distance-threshold=0 ",
-    "--paired" # TODO: extract this as parameter using is_paired condition
-  ]
+umi_dedup: "--edit-distance-threshold=0"
 
 cutadapt:
-  read1_adapter: "AGATCGGAAGAGCACACGTCTG"
-  read2_adapter: "ATGTGCTGCGAGAAGGCTA"
+  read1_adapter: "AGATCGGAAGAGCACACGTCTGAACTCCAGTCA"
+  read2_adapter: "AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT"
   default:
     [
       "-q 10 ",
@@ -35,7 +27,7 @@ cutadapt:
     ]
 
 star:
-  index: Null
+  index: null
   genomeSAindexNbases: 9
   multi: 10
   sam_multi: 1

@@ -1,6 +1,4 @@
 samplesheet: "config/samplesheet/samples_nextflex.tsv"
-
-paired-end: true
 libtype: "forward"
 
 get_genome:

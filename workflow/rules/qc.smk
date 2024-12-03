@@ -1,0 +1,89 @@
+# -----------------------------------------------------
+# modules to make fastqc report
+# -----------------------------------------------------
+if is_single_end_experiment:
+
+    rule fastqc:
+        input:
+            get_qc_input,
+        output:
+            report=directory("results/qc/{status}_reads/{sample}"),
+        conda:
+            "../envs/fastqc.yml"
+        message:
+            """--- Checking fastq files with FastQC."""
+        log:
+            "results/qc/{status}_reads/log/{sample}.log",
+        threads: int(workflow.cores * 0.2)  # assign 20% of max cores
+        shell:
+            "mkdir -p {output.report}; "
+            "fastqc --nogroup --threads {threads} -o {output.report} -q {input[0]} > {log}"
+
+
+if is_paired_end_experiment:
+
+    rule fastqc:
+        input:
+            get_qc_input,
+        output:
+            report=directory("results/qc/{status}_reads/{sample}"),
+        conda:
+            "../envs/fastqc.yml"
+        message:
+            """--- Checking fastq files with FastQC."""
+        log:
+            "results/qc/{status}_reads/log/{sample}.log",
+        threads: int(workflow.cores * 0.2)  # assign 20% of max cores
+        shell:
+            "mkdir -p {output.report}; "
+            "fastqc --nogroup --threads {threads} -o {output.report} -q {input[0]} > {log}; "
+            "fastqc --nogroup --threads {threads} -o {output.report} -q {input[1]} &> {log}; "
+
+
+# -----------------------------------------------------
+# module to determine alignment stats
+# -----------------------------------------------------
+rule alignment_stats:
+    input:
+        get_stats_input,
+    output:
+        "results/qc/{step}_alignment/{sample}_stats.txt",
+    conda:
+        "../envs/samtools.yml"
+    log:
+        "results/qc/{step}_alignment/log/samtools_{sample}.log",
+    message:
+        """--- Generate mapping statistics of BAM file using samtools."""
+    threads: int(workflow.cores * 0.2)  # assign 20% of max cores
+    shell:
+        "samtools flagstat -@ {threads} {input} > {output} 2> {log}"
+
+
+# -----------------------------------------------------
+# module to run multiQC on input + processed files
+# -----------------------------------------------------
+rule multiqc:
+    input:
+        construct_multiqc_input(),
+    output:
+        report="results/qc/multiqc/multiqc_report.html",
+        final="results/report/multiqc_report.html",
+    conda:
+        "../envs/multiqc.yml"
+    message:
+        """--- Generating MultiQC report for seq data."""
+    log:
+        path="results/qc/multiqc/log/multiqc.log",
+    params:
+        defaults=config["multiqc"]["defaults"],
+        config=config["multiqc"]["config"],
+        outdir=lambda w, output: os.path.split(output.report)[0],
+        filename=lambda w, output: os.path.split(output.report)[1],
+        qc_dir=lambda w, output: os.path.dirname(os.path.split(output.report)[0]),
+    shell:
+        "multiqc {params.defaults} "
+        "--config {params.config} "
+        "--outdir {params.outdir} "
+        "--filename {params.filename} "
+        "{params.qc_dir} &> {log.path}; "
+        "cp {output.report} {output.final}"

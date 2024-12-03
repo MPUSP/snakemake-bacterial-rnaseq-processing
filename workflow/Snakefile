@@ -1,0 +1,84 @@
+# ----------------------------------------------------- #
+# A Snakemake workflow for the preprocessing of short   #
+# read RNAseq data in bacteria.                         #
+#                                                       #
+# Authors: Rina Ahmed-Begrich                           #
+# Date: 2024-12-03                                      #
+# License: Free for non-commercial use (see LICENSE)    #
+#          For all 3rd party tools separate licenses    #
+#          may apply.                                   #
+# ----------------------------------------------------- #
+import os
+import pandas as pd
+
+
+__author__ = "Rina Ahmed-Begrich"
+__year__ = "2024"
+
+bold = "\033[1m"
+green = "\033[92m"
+cyan = "\033[36m"
+end = "\033[0m"
+
+msg = f"""{cyan}Bacterial-rnaseq-preprocessing: A Snakemake workflow
+for the preprocessing of short read RNAseq data in bacteria.{end}"""
+
+epilog = f"""{cyan}Written by {__author__},
+Max Planck Unit for the Science of Pathogens. Copyright (c) {__year__}.
+Copyright Holder All Rights Reserved.{end}
+
+"""
+
+
+# load configuration
+# -----------------------------------------------------
+configfile: "config/config.yml"
+
+
+# load rules
+# -----------------------------------------------------
+include: "rules/common.smk"
+include: "rules/qc.smk"
+include: "rules/trim.smk"
+include: "rules/dedup.smk"
+include: "rules/mapping.smk"
+
+
+onstart:
+    print("\n--- Analysis started...\n")
+    print()
+    print("--- Analysis parameters --------------------------------------------\n")
+    print(f"Current working directory: {os.getcwd()}")
+    print(f"Output directory: {os.path.join(os.getcwd(), 'results')}")
+    print()
+    print(f"RNAseq samples: {list(samples.index)}")
+    print()
+
+
+onsuccess:
+    print()
+    print(msg)
+    print(epilog)
+    print("--- Workflow finished, no error! -----------------------------------")
+    print()
+    debug = os.path.join(os.getcwd(), "results/workflow.log")
+    shell(
+        "cat {log} > {debug} && echo -e '\nWorkflow finished, no error!\n' >> {debug}"
+    )
+
+
+onerror:
+    print()
+    print(msg)
+    print(epilog)
+    print("--- An error occurred! ---------------------------------------------")
+    print()
+    error = os.path.join(os.getcwd(), "results/error.log")
+    shell("cat {log} > {error} && echo -e '\nAn error occurred!' >> {error}")
+
+
+# target rules
+# -----------------------------------------------------
+rule all:
+    input:
+        get_final_output(),
