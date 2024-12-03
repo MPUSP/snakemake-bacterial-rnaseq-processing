@@ -1,0 +1,78 @@
+samplesheet: "config/samplesheet/samples_nextflex.tsv"
+
+paired-end: true
+libtype: "forward"
+
+get_genome:
+  database: "ncbi"
+  assembly: "GCF_000006785.2"
+  fasta: null
+  gff: null
+  gff_source_type:
+    [
+      "RefSeq": "gene",
+      "RefSeq": "pseudogene",
+      "RefSeq": "CDS",
+      "Protein Homology": "CDS"
+    ]
+
+umi_extraction:
+  method: "string"
+  pattern:
+    [
+      "--bc-pattern=NNNN ",
+      "--bc-pattern2=NNNN",
+    ]
+umi_dedup:
+  [
+    "--edit-distance-threshold=0 ",
+    "--paired" # TODO: extract this as parameter using is_paired condition
+  ]
+
+trunc_fastq_params:
+   default:
+       ["-3p 4"]
+
+
+cutadapt:
+  read1_adapter: "TGGAATTCTCGGGTGCCAAGGAACTCCAGTCAC"
+  read2_adapter: "GATCGTCGGACTGTAGAACTCTGAACGTGTAGATC"
+  default:
+    [
+      "-q 10 ",
+      "-m 22 ",
+      "--overlap=3"
+    ]
+
+star:
+  index: Null
+  genomeSAindexNbases: 9
+  multi: 10
+  sam_multi: 1
+  intron_max: 1
+  default:
+    [
+      "--readFilesCommand zcat ",
+      "--outSAMstrandField None ",
+      "--outSAMattributes All ",
+      "--outSAMattrIHstart 0 ",
+      "--outFilterType Normal ",
+      "--outFilterMultimapScoreRange 1 ",
+      "-o STARmappings ",
+      "--outSAMtype BAM Unsorted ",
+      "--outStd BAM_Unsorted ",
+      "--outMultimapperOrder Random ",
+      "--alignEndsType EndToEnd",
+    ]
+
+deeptools:
+  bin_size: 1
+  normalize: "CPM" # "RPKM"
+
+
+multiqc:
+    config: "config/multiqc_config.yml"
+    defaults: ["--dirs-depth 2 ",
+        "--exclude general_stats ",
+        "--force ",
+        "--dirs"]
