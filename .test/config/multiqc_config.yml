@@ -1,0 +1,21 @@
+report_header_info:
+  - Contact E-mail: "bioinformatics@mpusp.mpg.de"
+  - Application Type: "Bacterial RNA sequencing"
+  - Sequencing Platform: "short read sequencing"
+  - Sequencing Setup: "Total RNAseq"
+
+title: "Bacterial RNAseq Preprocessing"
+subtitle: "A Snakemake workflow for the preprocessing of short read rnaseq data in bacteria."
+intro_text: ""
+
+show_analysis_paths: false
+
+custom_logo: "../resources/images/MPUSP_logo.png"
+custom_logo_url: "https://www.mpusp.mpg.de/"
+custom_logo_title: "Max Planck Unit for the Science of Pathogens"
+
+skip_versions_section: false
+versions_table_group_header: "Workflow Analysis Steps"
+
+remove_sections:
+  - samtools-stats

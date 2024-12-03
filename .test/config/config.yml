@@ -1,0 +1,66 @@
+samplesheet: "config/samplesheet/samples_neb_umi.tsv"
+
+paired-end: true
+libtype: "forward"
+
+get_genome:
+  database: "ncbi"
+  assembly: "GCF_000006785.2"
+  fasta: null
+  gff: null
+  gff_source_type:
+    [
+      "RefSeq": "gene",
+      "RefSeq": "pseudogene",
+      "RefSeq": "CDS",
+      "Protein Homology": "CDS"
+    ]
+
+umi_dedup:
+  [
+    "--edit-distance-threshold=0 ",
+    "--paired"
+  ]
+
+cutadapt:
+  read1_adapter: "AGATCGGAAGAGCACACGTCTGAACTCCAGTCA"
+  read2_adapter: "AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT"
+  default:
+    [
+      "-q 10 ",
+      "-m 18 ",
+      "--overlap=3"
+    ]
+
+star:
+  index: null
+  genomeSAindexNbases: 9
+  multi: 10
+  sam_multi: 1
+  intron_max: 1
+  default:
+    [
+      "--readFilesCommand zcat ",
+      "--outSAMstrandField None ",
+      "--outSAMattributes All ",
+      "--outSAMattrIHstart 0 ",
+      "--outFilterType Normal ",
+      "--outFilterMultimapScoreRange 1 ",
+      "-o STARmappings ",
+      "--outSAMtype BAM Unsorted ",
+      "--outStd BAM_Unsorted ",
+      "--outMultimapperOrder Random ",
+      "--alignEndsType EndToEnd",
+    ]
+
+deeptools:
+  bin_size: 1
+  normalize: "CPM" # "RPKM"
+
+
+multiqc:
+    config: "config/multiqc_config.yml"
+    defaults: ["--dirs-depth 2 ",
+        "--exclude general_stats ",
+        "--force ",
+        "--dirs"]
