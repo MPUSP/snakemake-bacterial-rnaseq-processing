@@ -149,7 +149,8 @@ if is_single_end_experiment:
         threads: int(workflow.cores * 0.2)  # assign 25% of max cores.
         shell:
             "umi_tools dedup "
-            "{params.default} --stdin={input.bam} "
+            "{params.default} "
+            "--stdin={input.bam} "
             "--output-stats={log.stats} "
             "--log={log.path} 2> {log.stderr} | "
             "samtools sort -@ {threads} -O bam -T {params.tmp} -o {output.bam}; "
@@ -180,7 +181,8 @@ if is_paired_end_experiment:
         shell:
             "umi_tools dedup "
             "--paired "
-            "{params.default} --stdin={input.bam} "
+            "{params.default} "
+            "--stdin={input.bam} "
             "--output-stats={log.stats} "
             "--log={log.path} 2> {log.stderr} | "
             "samtools sort -@ {threads} -O bam -T {params.tmp} -o {output.bam}; "

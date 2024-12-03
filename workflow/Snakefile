@@ -42,6 +42,7 @@ include: "rules/qc.smk"
 include: "rules/trim.smk"
 include: "rules/dedup.smk"
 include: "rules/mapping.smk"
+include: "rules/quantification.smk"
 
 
 onstart:

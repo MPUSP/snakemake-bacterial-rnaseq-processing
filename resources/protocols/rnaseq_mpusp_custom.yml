@@ -14,15 +14,14 @@ get_genome:
       "Protein Homology": "CDS"
     ]
 
+extract_features:
+  biotypes: ["protein_coding", "pseudogene", "ncRNA", "rRNA", "tRNA"]
+
 umi_extraction:
   method: "regex"
   method: "regex"
   pattern: "^(?P<umi_0>{.{3}[ATG]C[ATG].{3}[ATC]G[ATC]N.{3}T})"
-umi_dedup:
-  [
-    "--edit-distance-threshold=0 ",
-    "--paired" # TODO: extract this as parameter using is_paired condition
-  ]
+umi_dedup: "--edit-distance-threshold=0"
 
 cutadapt:
   read1_adapter: "AGATCGGAAGAGCACACGTCTG"
@@ -55,10 +54,20 @@ star:
       "--alignEndsType EndToEnd",
     ]
 
+feature_counts:
+  defaults:
+    [
+      "-F GTF",
+      "-t gene",
+      "-g locus_tag",
+      "-M",
+      "--fracOverlap 0.2",
+      "--largestOverlap"
+    ]
+
 deeptools:
   bin_size: 1
   normalize: "CPM" # "RPKM"
-
 
 multiqc:
     config: "config/multiqc_config.yml"

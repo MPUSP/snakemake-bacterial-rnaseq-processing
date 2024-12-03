@@ -39,7 +39,8 @@ This workflow is a best-practice workflow for the preprocessing of short read se
 5. Map reads to the reference genome (`STAR aligner`)
 6. Sort and index aligned rnaseq data (`samtools`)
 7. Deduplicate reads by unique molecular identifier (UMI, `umi_tools`)
-8. Generate summary report for all processing steps (`MultiQC`)
+8. Quantify biotype features (`featureCounts`)
+9. Generate summary report for all processing steps (`MultiQC`)
 
 ---
 

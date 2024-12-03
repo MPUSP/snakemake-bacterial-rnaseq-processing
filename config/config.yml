@@ -14,6 +14,9 @@ get_genome:
       "Protein Homology": "CDS"
     ]
 
+extract_features:
+  biotypes: ["protein_coding", "pseudogene", "ncRNA", "rRNA", "tRNA"]
+
 umi_dedup: "--edit-distance-threshold=0"
 
 cutadapt:
@@ -45,6 +48,17 @@ star:
       "--outStd BAM_Unsorted ",
       "--outMultimapperOrder Random ",
       "--alignEndsType EndToEnd",
+    ]
+
+feature_counts:
+  defaults:
+    [
+      "-F GTF",
+      "-t gene",
+      "-g locus_tag",
+      "-M",
+      "--fracOverlap 0.2",
+      "--largestOverlap"
     ]
 
 deeptools:

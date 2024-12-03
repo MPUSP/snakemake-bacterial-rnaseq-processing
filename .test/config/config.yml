@@ -1,5 +1,5 @@
 samplesheet: "config/samplesheet/samples_neb_umi.tsv"
-libtype: "forward"
+libtype: "reverse"
 
 get_genome:
   database: "ncbi"
@@ -14,11 +14,10 @@ get_genome:
       "Protein Homology": "CDS"
     ]
 
-umi_dedup:
-  [
-    "--edit-distance-threshold=0 ",
-    "--paired"
-  ]
+extract_features:
+  biotypes: ["protein_coding", "pseudogene", "ncRNA", "rRNA", "tRNA"]
+
+umi_dedup: "--edit-distance-threshold=0"
 
 cutadapt:
   read1_adapter: "AGATCGGAAGAGCACACGTCTGAACTCCAGTCA"
@@ -49,6 +48,17 @@ star:
       "--outStd BAM_Unsorted ",
       "--outMultimapperOrder Random ",
       "--alignEndsType EndToEnd",
+    ]
+
+feature_counts:
+  defaults:
+    [
+      "-F GTF",
+      "-t gene",
+      "-g locus_tag",
+      "-M",
+      "--fracOverlap 0.2",
+      "--largestOverlap"
     ]
 
 deeptools:

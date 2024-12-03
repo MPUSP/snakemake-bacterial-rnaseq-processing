@@ -5,7 +5,7 @@ if is_single_end_experiment:
 
     rule fastqc:
         input:
-            get_qc_input,
+            fastq=get_qc_input,
         output:
             report=directory("results/qc/{status}_reads/{sample}"),
         conda:
@@ -17,14 +17,14 @@ if is_single_end_experiment:
         threads: int(workflow.cores * 0.2)  # assign 20% of max cores
         shell:
             "mkdir -p {output.report}; "
-            "fastqc --nogroup --threads {threads} -o {output.report} -q {input[0]} > {log}"
+            "fastqc --nogroup --threads {threads} -o {output.report} -q {input.fastq} > {log}"
 
 
 if is_paired_end_experiment:
 
     rule fastqc:
         input:
-            get_qc_input,
+            fastqs=get_qc_input,
         output:
             report=directory("results/qc/{status}_reads/{sample}"),
         conda:
@@ -36,8 +36,8 @@ if is_paired_end_experiment:
         threads: int(workflow.cores * 0.2)  # assign 20% of max cores
         shell:
             "mkdir -p {output.report}; "
-            "fastqc --nogroup --threads {threads} -o {output.report} -q {input[0]} > {log}; "
-            "fastqc --nogroup --threads {threads} -o {output.report} -q {input[1]} &> {log}; "
+            "fastqc --nogroup --threads {threads} -o {output.report} -q {input.fastqs[0]} > {log}; "
+            "fastqc --nogroup --threads {threads} -o {output.report} -q {input.fastqs[1]} &> {log}; "
 
 
 # -----------------------------------------------------
@@ -57,6 +57,24 @@ rule alignment_stats:
     threads: int(workflow.cores * 0.2)  # assign 20% of max cores
     shell:
         "samtools flagstat -@ {threads} {input} > {output} 2> {log}"
+
+
+# -----------------------------------------------------
+# module to qc quantified biotypes
+# -----------------------------------------------------
+rule qc_biotypes:
+    input:
+        "results/quantify_biotypes/{sample}.counts.summary",
+    output:
+        "results/qc/biotypes/{sample}.counts.summary",
+    conda:
+        "../envs/feature_counts.yml"
+    log:
+        "results/qc/biotypes/log/copy_{sample}.log",
+    message:
+        """--- Copy biotype quantification summary."""
+    shell:
+        "cp {input} {output} &> {log}"
 
 
 # -----------------------------------------------------

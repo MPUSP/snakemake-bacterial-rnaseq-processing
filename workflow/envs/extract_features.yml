@@ -1,0 +1,6 @@
+name: extract_features
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - bcbio-gff=0.7.1

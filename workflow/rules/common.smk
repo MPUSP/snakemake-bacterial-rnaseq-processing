@@ -71,7 +71,9 @@ if not validate_experiment_type(a=is_single_end_experiment, b=is_paired_end_expe
 # set final output files
 # -----------------------------------------------------
 def get_final_output():
-    return "results/report/multiqc_report.html"
+    targets = []
+    targets.append("results/report/multiqc_report.html")
+    return targets
 
 
 # returns True if single-end
@@ -143,7 +145,6 @@ def get_umi_input(wildcards):
                 sample=samples.loc[wildcards.sample]["fq2"],
             )
         )
-
     # include third fastq file
     if is_rnaseq_neb_umi:
         inputs.append(
@@ -153,7 +154,6 @@ def get_umi_input(wildcards):
                 sample=samples.loc[wildcards.sample]["fq_umi"],
             )
         )
-
     return list(itertools.chain.from_iterable(inputs))
 
 
@@ -162,17 +162,17 @@ def get_trimming_input(wildcards):
     """Get FASTQ files for trimming."""
     inputs = []
     if is_single_end_experiment:
-        inputs.append(expand("results/umi_extract/{sample}.fastq.gz", sample=samples.index))
-
+        inputs.append(
+            expand("results/umi_extract/{sample}.fastq.gz", sample=wildcards.sample)
+        )
     elif is_paired_end_experiment:
         inputs.append(
             expand(
                 "results/umi_extract/{sample}_{read}.fastq.gz",
-                sample=samples.index,
+                sample=wildcards.sample,
                 read=["R1", "R2"],
             )
         )
-
     return list(itertools.chain.from_iterable(inputs))
 
 
@@ -182,7 +182,6 @@ def get_mapping_input(wildcards):
     inputs = []
     if is_single_end_experiment and (is_rnaseq_mpusp_custom or is_rnaseq_neb_umi):
         inputs.append(expand("results/clipped/{sample}.fastq.gz", sample=wildcards.sample))
-
     elif is_paired_end_experiment:
         inputs.append(
             expand(
@@ -191,7 +190,6 @@ def get_mapping_input(wildcards):
                 read=["R1", "R2"],
             )
         )
-
     return list(itertools.chain.from_iterable(inputs))
 
 
@@ -218,7 +216,6 @@ def construct_multiqc_input():
             sample=samples.index,
         ),
     )
-
     inputs.append(
         expand(
             "results/qc/{step}_alignment/{sample}_stats.txt",
@@ -226,5 +223,10 @@ def construct_multiqc_input():
             sample=samples.index,
         )
     )
-
+    inputs.append(
+        expand(
+            "results/qc/biotypes/{sample}.counts.summary",
+            sample=samples.index,
+        )
+    )
     return list(itertools.chain.from_iterable(inputs))
