@@ -20,13 +20,13 @@ A Snakemake workflow for the preprocessing of short read rnaseq data in bacteria
     -   [Authors](#authors)
     -   [References](#references)
 
-## Usage {#usage}
+## Usage
 
 The usage of this workflow is described in the [Snakemake Workflow Catalog](https://snakemake.github.io/snakemake-workflow-catalog/?usage=MPUSP%2Fsnakemake-bacterial-rnaseq-preprocessing).
 
 If you use this workflow in a paper, don't forget to give credits to the authors by citing the URL of this (original) <repo>sitory and its DOI (see above).
 
-## Workflow overview {#workflow-overview}
+## Workflow overview
 
 TODO: include DAG.
 ---
@@ -44,7 +44,7 @@ This workflow is a best-practice workflow for the preprocessing of short read se
 7. Deduplicate reads by unique molecular identifier (UMI, `umi_tools`)
 8. Generate summary report for all processing steps (`MultiQC`)
 
-## Installation {#installation}
+## Installation
 
 **Step 1: Clone this repository**
 
@@ -81,11 +81,11 @@ conda activate snakemake-bacterial-rnaseq-preprocessing
 snakemake -c 1 --sdm conda --conda-create-envs-only --conda-cleanup-pkgs cache
 ```
 
-## Running the workflow {#running-the-workflow}
+## Running the workflow
 
-### Input data {#input-data}
+### Input data
 
-#### Reference genome {#reference-genome}
+#### Reference genome
 
 An NCBI Refseq ID, e.g. `GCF_000006785.2`. Find your genome assembly and corresponding ID on [NCBI genomes](https://www.ncbi.nlm.nih.gov/data-hub/genome/). Alternatively use a custom pair of `*.fasta` file and `*.gff` file that describe the genome of choice.
 
@@ -109,7 +109,7 @@ Some configuration parameters of the pipeline may be specific for your data and 
 
 Currently, we support example configurations for three different sequencing protocols, *i.e.* `rnaseq_nextflex`, `rnaseq_neb_umi`and `rnseq_mpusp_custom`. These example protocols can be found in `resources/protocols/`.
 
-### Execution {#execution}
+### Execution
 
 To run the workflow from command line, change the working directory.
 
@@ -137,6 +137,6 @@ snakemake --cores 10 --sdm conda --directory .test
 
 Visit the MPUSP github page at https://github.com/MPUSP for more info on this workflow and other projects.
 
-## References {#references}
+## References
 
 -   Essential tools are linked in the top section of this document
