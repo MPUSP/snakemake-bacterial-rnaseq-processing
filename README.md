@@ -33,18 +33,19 @@ This workflow is a best-practice workflow for the preprocessing of short read se
 1. Obtain genome database in `fasta` and `gff` format (`python`, [NCBI Datasets](https://www.ncbi.nlm.nih.gov/datasets/docs/v2/))
    1. Using automatic download from NCBI with a `RefSeq` ID
    2. Using user-supplied files
-2. Check quality of input sequencing data (`FastQC`)
-3. Cut adapters and filter by length and/or sequencing quality score (`cutadapt`)
-4. Identify unique molecular identifier (UMI, `umi_tools`)
-5. Map reads to the reference genome (`STAR aligner`)
-6. Sort and index aligned rnaseq data (`samtools`)
-7. Deduplicate reads by unique molecular identifier (UMI, `umi_tools`)
-8. Quantify biotype features (`featureCounts`)
-9. Generate summary report for all processing steps (`MultiQC`)
+2. Check quality of input sequencing data ([FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/))
+3. Cut adapters and filter by length and/or sequencing quality score ([Cutadapt](https://cutadapt.readthedocs.io/en/stable/))
+4. Identify unique molecular identifier (UMI, [UMI-tools](https://umi-tools.readthedocs.io/en/latest/))
+5. Map reads to the reference genome ([STAR aligner](https://github.com/alexdobin/STAR))
+6. Sort and index aligned rnaseq data ([Samtools](http://www.htslib.org/))
+7. Deduplicate reads by unique molecular identifier (UMI, [UMI-tools](https://umi-tools.readthedocs.io/en/latest/))
+8. Quantify biotype features ([featureCounts](https://subread.sourceforge.net/featureCounts.html))
+9. Generate summary report for all processing steps ([MultiQC](https://seqera.io/multiqc/))
 
 ---
 
-<img src="resources/images/dag.png" align="center" />
+![](resources/images/dag.png)
+<p>Figure 1: Directed acyclic graph (DAG) of the current workflow steps.</p>
 
 ## Installation
 
@@ -119,16 +120,16 @@ To run the workflow from command line, change the working directory.
 cd snakemake-bacterial-rnaseq-preprocessing
 ```
 
-Adjust options in the default config file `config/config.yml`. Before running the entire workflow, you can perform a dry run using:
-
-``` bash
-snakemake --dry-run
-```
-
 To run the complete workflow with test files using **`conda`**, execute the following command. The definition of the number of compute cores is mandatory.
 
 ``` bash
 snakemake --cores 10 --sdm conda --directory .test
+```
+
+To run the workflow with your own data, define the sample sheet as explained above and adjust options in the default config file `config/config.yml` according to your library preparation protocol. Before running the entire workflow, you can perform a dry run using:
+
+``` bash
+snakemake -c 1 --sdm conda --dry-run
 ```
 
 ## Author
