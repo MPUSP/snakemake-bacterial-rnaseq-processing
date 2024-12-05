@@ -68,7 +68,8 @@ deeptools:
 
 multiqc:
     config: "config/multiqc_config.yml"
-    defaults: ["--dirs-depth 2 ",
-        "--exclude general_stats ",
-        "--force ",
-        "--dirs"]
+    defaults:
+      [
+        "--dirs-depth 2 ",
+        "--force"
+      ]

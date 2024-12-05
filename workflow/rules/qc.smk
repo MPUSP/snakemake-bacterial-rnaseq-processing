@@ -47,7 +47,7 @@ rule alignment_stats:
     input:
         get_stats_input,
     output:
-        "results/qc/{step}_alignment/{sample}_stats.txt",
+        "results/qc/{step}_alignment/{sample}.flagstat",
     conda:
         "../envs/samtools.yml"
     log:
@@ -97,11 +97,11 @@ rule multiqc:
         config=config["multiqc"]["config"],
         outdir=lambda w, output: os.path.split(output.report)[0],
         filename=lambda w, output: os.path.split(output.report)[1],
-        qc_dir=lambda w, output: os.path.dirname(os.path.split(output.report)[0]),
+        qc_dirs=define_multiqc_dirs(),
     shell:
         "multiqc {params.defaults} "
         "--config {params.config} "
         "--outdir {params.outdir} "
         "--filename {params.filename} "
-        "{params.qc_dir} &> {log.path}; "
+        "--dirs {params.qc_dirs} &> {log.path}; "
         "cp {output.report} {output.final}"

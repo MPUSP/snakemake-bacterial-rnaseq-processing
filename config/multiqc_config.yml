@@ -17,5 +17,29 @@ custom_logo_title: "Max Planck Unit for the Science of Pathogens"
 skip_versions_section: false
 versions_table_group_header: "Workflow Analysis Steps"
 
+skip_versions_section: false
+versions_table_group_header: "Workflow Analysis Steps"
+
+skip_generalstats: true
+
 remove_sections:
   - samtools-stats
+
+module_order:
+  - cutadapt
+  - fastqc:
+      name: "FastQC (trimmed)"
+      anchor: "fastqc_trimmed"
+      info: "This section of the report shows FastQC results after adapter trimming."
+      target: ""
+      path_filters:
+        - "*/clipped_reads/*_fastqc.zip"
+  - fastqc:
+      name: "FastQC (raw)"
+      anchor: "fastqc_raw"
+      path_filters:
+        - "*/raw_reads/*_fastqc.zip"
+
+report_section_order:
+  fastqc_raw:
+    before: fastqc_trimmed

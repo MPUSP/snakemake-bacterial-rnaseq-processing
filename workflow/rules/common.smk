@@ -218,7 +218,7 @@ def construct_multiqc_input():
     )
     inputs.append(
         expand(
-            "results/qc/{step}_alignment/{sample}_stats.txt",
+            "results/qc/{step}_alignment/{sample}.flagstat",
             step=["mapped", "dedup"],
             sample=samples.index,
         )
@@ -230,3 +230,15 @@ def construct_multiqc_input():
         )
     )
     return list(itertools.chain.from_iterable(inputs))
+
+
+def define_multiqc_dirs():
+    dirs = []
+    prefix = "results"
+    dirs.append(os.path.join(prefix, "qc/raw_reads"))
+    dirs.append(os.path.join(prefix, "clipped"))
+    dirs.append(os.path.join(prefix, "qc/clipped_reads"))
+    dirs.append(os.path.join(prefix, "mapped/unsorted"))
+    dirs.append(os.path.join(prefix, "deduplicated"))
+    dirs.append(os.path.join(prefix, "qc/biotypes"))
+    return " ".join(dirs)
