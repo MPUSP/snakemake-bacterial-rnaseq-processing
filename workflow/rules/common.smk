@@ -1,6 +1,7 @@
 import itertools
 import os
 import pandas as pd
+import yaml
 from snakemake.logging import logger
 
 
@@ -205,6 +206,31 @@ def get_stats_input(wildcards):
             "results/deduplicated/{sample}.bam",
             sample=wildcards.sample,
         )
+
+
+def yaml_versions_input():
+    inputs = []
+    inputs.append(
+        expand(
+            "results/qc/{status}_reads/{sample}",
+            status=["raw", "clipped"],
+            sample=samples.index,
+        ),
+    )
+    inputs.append(
+        expand(
+            "results/qc/{step}_alignment/{sample}.flagstat",
+            step=["mapped", "dedup"],
+            sample=samples.index,
+        )
+    )
+    inputs.append(
+        expand(
+            "results/qc/biotypes/{sample}.counts.summary",
+            sample=samples.index,
+        )
+    )
+    return list(itertools.chain.from_iterable(inputs))
 
 
 def construct_multiqc_input():

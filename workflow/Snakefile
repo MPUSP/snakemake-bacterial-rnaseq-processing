@@ -4,12 +4,11 @@
 #                                                       #
 # Authors: Rina Ahmed-Begrich                           #
 # Date: 2024-12-03                                      #
-# License: Free for non-commercial use (see LICENSE)    #
-#          For all 3rd party tools separate licenses    #
-#          may apply.                                   #
+# License: MIT                                          #
 # ----------------------------------------------------- #
 import os
 import pandas as pd
+from subprocess import getoutput
 
 
 __author__ = "Rina Ahmed-Begrich"
