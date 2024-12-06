@@ -8,10 +8,12 @@ rule init_version:
         "../envs/base.yml"
     message:
         """--- init version logging file."""
+    log:
+        "results/qc/log/init_versions.txt",
     shell:
-        "python --version|sed 's/ /,/' > {output}; "
-        "snakemake --version | sed 's/^/snakemake,/' >> {output}; "
-        "python -c 'import pandas; print(f\"pandas,{{pandas.__version__}}\")' >> {output}"
+        "python --version|sed 's/ /,/' > {output} 2> {log}; "
+        "snakemake --version | sed 's/^/snakemake,/' >> {output} 2>> {log}; "
+        "python -c 'import pandas; print(f\"pandas,{{pandas.__version__}}\")' >> {output} 2>> {log}"
 
 
 # -----------------------------------------------------
