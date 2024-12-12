@@ -45,7 +45,6 @@ if is_single_end_experiment:
         input:
             bam="results/deduplicated/{sample}.bam",
             gtf="results/extracted_features/biotypes.gtf",
-            versions="results/qc/versions.txt",
         output:
             counts="results/quantify_biotypes/{sample}.counts",
             summary="results/quantify_biotypes/{sample}.counts.summary",
@@ -59,7 +58,6 @@ if is_single_end_experiment:
         params:
             defaults=config["feature_counts"]["defaults"],
             libtype=config["libtype"],
-            tmp=lambda w: f"{w.sample}.tmp",
         shell:
             "if [ {params.libtype} == 'forward' ]; then "
             "libtype=`echo -e '-s 1'`; "
@@ -70,10 +68,7 @@ if is_single_end_experiment:
             "${{libtype}} "
             "-a {input.gtf} "
             "-o {output.counts} "
-            "{input.bam} &> {log.path}; "
-            "featureCounts -v 2> {params.tmp}; "
-            "cat {params.tmp}|head -n 2 | tail -n 1|cut -d\" \" -f2 | sed 's/^/featureCounts,/' | sed 's/v//' >> {input.versions}; "
-            "rm -f {params.tmp}"
+            "{input.bam} &> {log.path}"
 
 
 if is_paired_end_experiment:
@@ -82,7 +77,6 @@ if is_paired_end_experiment:
         input:
             bam="results/deduplicated/{sample}.bam",
             gtf="results/extracted_features/biotypes.gtf",
-            versions="results/qc/versions.txt",
         output:
             counts="results/quantify_biotypes/{sample}.counts",
             summary="results/quantify_biotypes/{sample}.counts.summary",
@@ -96,7 +90,6 @@ if is_paired_end_experiment:
         params:
             defaults=config["feature_counts"]["defaults"],
             libtype=config["libtype"],
-            tmp=lambda w: f"{w.sample}.tmp",
         shell:
             "if [ {params.libtype} == 'forward' ]; then "
             "libtype=`echo -e '-s 1'`; "
@@ -108,7 +101,4 @@ if is_paired_end_experiment:
             "-a {input.gtf} "
             "-p "
             "-o {output.counts} "
-            "{input.bam} &> {log.path};"
-            "featureCounts -v 2> {params.tmp}; "
-            "cat {params.tmp}|head -n 2 | tail -n 1|cut -d\" \" -f2 | sed 's/^/featureCounts,/' | sed 's/v//' >> {input.versions}; "
-            "rm -f {params.tmp}"
+            "{input.bam} &> {log.path}"

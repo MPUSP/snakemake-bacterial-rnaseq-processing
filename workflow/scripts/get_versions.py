@@ -4,7 +4,7 @@
 # -----------------------------------------------------------------------------
 #
 # This script generates a MultiQC compatible software version yaml file from a
-# tsv file.
+# conda envs file.
 # -----------------------------------------------------------------------------
 
 import os
@@ -12,7 +12,7 @@ import pandas as pd
 import yaml
 
 
-input_tab = snakemake.input["versions"]
+input_envs = snakemake.input["conda_envs"]
 input_conf = snakemake.params["config"]
 out_multi = snakemake.output["multi_conf"]
 output_yml = snakemake.output["yaml"]
@@ -20,16 +20,17 @@ output_log = snakemake.log["path"]
 log = []
 error = []
 
+version_dic = {}
 try:
-    version_dic = (
-        pd.read_csv(input_tab, sep=",", header=None)
-        .drop_duplicates()
-        .reset_index(drop=True)
-        .set_index(0)[1]
-        .to_dict()
-    )
+    with open(input_envs, "r") as conda_envs:
+        for line in conda_envs:
+            line = line.strip()
+            if "=" in line:
+                if line.startswith("-"):
+                    soft, version = line.replace("- ", "").split("=")
+                    version_dic[soft] = f"{version}"
 except IOError:
-    error += [f"Error occurred when reading input file '{input_tab}'."]
+    error += [f"Error occurred when processing input file '{input_envs}'."]
 
 try:
     with open(input_conf, "r") as input_conf:
@@ -55,13 +56,6 @@ try:
 except IOError:
     error += [f"Output file '{output_yml}' can not be opened."]
 
-
-# Remove input_tab file
-try:
-    os.remove(input_tab)
-    log += f"File {input_tab} has been removed successfully."
-except FileNotFoundError:
-    error += [f"File '{input_tab}' not found."]
 
 # print error/log messages
 if error:

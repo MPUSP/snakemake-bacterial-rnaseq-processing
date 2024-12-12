@@ -6,7 +6,6 @@ if is_single_end_experiment:
     rule cutadapt:
         input:
             fastq=get_trimming_input,
-            versions="results/qc/versions.txt",
         output:
             "results/clipped/{sample}.fastq.gz",
         conda:
@@ -24,8 +23,7 @@ if is_single_end_experiment:
             "-a {params.adapter_R1} "
             "{params.default} "
             "-o {output} "
-            "{input.fastq} &> {log.path}; "
-            "cutadapt --version | sed 's/^/cutadapt,/' >> {input.versions}"
+            "{input.fastq} &> {log.path}"
 
 
 if is_paired_end_experiment:
@@ -33,7 +31,6 @@ if is_paired_end_experiment:
     rule cutadapt_pe:
         input:
             fastqs=get_trimming_input,
-            versions="results/qc/versions.txt",
         output:
             R1="results/clipped/{sample}_R1.fastq.gz",
             R2="results/clipped/{sample}_R2.fastq.gz",
@@ -57,8 +54,7 @@ if is_paired_end_experiment:
             "-A {params.adapter_R2} "
             "{params.default} "
             "-o {output.R1} -p {output.R2} "
-            "{params.input_str} &> {log.path}; "
-            "cutadapt --version | sed 's/^/cutadapt,/' >> {input.versions}"
+            "{params.input_str} &> {log.path}"
 
 
 # NOTE: for rnaseq_nextflex mode after clipping, 4 nt need to be removed from the 3p end -> use cutadapt -u='-4' -U='-4'

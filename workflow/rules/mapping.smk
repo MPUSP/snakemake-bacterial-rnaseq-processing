@@ -59,7 +59,6 @@ rule star_mapping:
     input:
         fastqs=get_mapping_input,
         genome=rules.create_star_index.output,
-        versions="results/qc/versions.txt",
     output:
         bam="results/mapped/unsorted/{sample}.bam",
     conda:
@@ -88,8 +87,7 @@ rule star_mapping:
         "--alignIntronMax {params.intron_max} "
         "--outSAMmultNmax {params.sam_multi} "
         "--outFileNamePrefix {params.outprefix} "
-        "> {output.bam} 2> {log};"
-        "STAR --version | sed 's/^/STAR,/' >> {input.versions}"
+        "> {output.bam} 2> {log}"
 
 
 # ---------------------------------------------------
@@ -98,7 +96,7 @@ rule star_mapping:
 rule mapping_sorted_bam:
     input:
         bam=rules.star_mapping.output.bam,
-        versions="results/qc/versions.txt",
+        versions="results/versions/log_conda_envs.txt",
     output:
         bam="results/mapped/{sample}.bam",
         bai="results/mapped/{sample}.bam.bai",
@@ -112,7 +110,6 @@ rule mapping_sorted_bam:
         tmp="results/mapped/sort_{sample}_tmp",
     threads: int(workflow.cores * 0.2)  # assign 20% of max cores
     shell:
-        "samtools sort -@ {threads} -O bam -T {params.tmp} -o {output.bam} {input.bam} 2> {log}; "
+        "samtools sort -@ {threads} -O bam -T {params.tmp} -o {output.bam} {input.bam} &> {log}; "
         "samtools index -@ {threads} {output.bam} 2>> {log}; "
-        "samtools --version | head -n 1 | sed 's/ /,/' >> {input.versions};"
-        "samtools --version | head -n 2 | tail -n 1|sed 's/Using htslib /htslib,/' >> {input.versions}"
+        "samtools --version | head -n 2 | tail -n 1|sed 's/Using htslib /- htslib=/' >> {input.versions}"

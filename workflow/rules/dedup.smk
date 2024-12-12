@@ -44,7 +44,6 @@ if is_single_end_experiment and (is_rnaseq_mpusp_custom or is_rnaseq_nextflex):
     rule umi_extract:
         input:
             fastq=get_umi_input,
-            versions="results/qc/versions.txt",
         output:
             fastq="results/umi_extraction/{sample}.fastq.gz",
         conda:
@@ -63,8 +62,7 @@ if is_single_end_experiment and (is_rnaseq_mpusp_custom or is_rnaseq_nextflex):
             "{params.pattern} "
             "--stdin {input.fastq} "
             "--stdout {output.fastq} "
-            "--log={log.path} 2> {log.error}; "
-            "umi_tools --version | sed 's/ version: /,/' >> {input.versions}"
+            "--log={log.path} 2> {log.error}"
 
 
 if is_paired_end_experiment and is_rnaseq_nextflex:
@@ -72,7 +70,6 @@ if is_paired_end_experiment and is_rnaseq_nextflex:
     rule umi_extract_pe:
         input:
             fastqs=get_umi_input,
-            versions="results/qc/versions.txt",
         output:
             R1="results/umi_extract/{sample}_R1.fastq.gz",
             R2="results/umi_extract/{sample}_R2.fastq.gz",
@@ -94,8 +91,7 @@ if is_paired_end_experiment and is_rnaseq_nextflex:
             "--read2-in={input.fastqs[1]} "
             "--stdout={output.R1} "
             "--read2-out={output.R2} "
-            "--log={log.path} 2> {log.error}; "
-            "umi_tools --version | sed 's/ version: /,/' >> {input.versions}"
+            "--log={log.path} 2> {log.error}"
 
 
 if is_paired_end_experiment and is_rnaseq_mpusp_custom:
@@ -103,7 +99,6 @@ if is_paired_end_experiment and is_rnaseq_mpusp_custom:
     rule umi_extract_pe:
         input:
             fastqs=get_umi_input,
-            versions="results/qc/versions.txt",
         output:
             R1="results/umi_extract/{sample}_R1.fastq.gz",
             R2="results/umi_extract/{sample}_R2.fastq.gz",
@@ -125,8 +120,7 @@ if is_paired_end_experiment and is_rnaseq_mpusp_custom:
             "--read2-in={input.fastqs[1]} "
             "--stdout={output.R1} "
             "--read2-out={output.R2} "
-            "--log={log.path} 2> {log.error}; "
-            "umi_tools --version | sed 's/ version: /,/' >> {input.versions}"
+            "--log={log.path} 2> {log.error}"
 
 
 # ---------------------------------------------
@@ -138,7 +132,6 @@ if is_single_end_experiment:
         input:
             bam="results/mapped/{sample}.bam",
             bai="results/mapped/{sample}.bai",
-            versions="results/qc/versions.txt",
         output:
             bam="results/deduplicated/{sample}.bam",
             bai="results/deduplicated/{sample}.bai",
@@ -161,8 +154,7 @@ if is_single_end_experiment:
             "--output-stats={log.stats} "
             "--log={log.path} 2> {log.stderr} | "
             "samtools sort -@ {threads} -O bam -T {params.tmp} -o {output.bam}; "
-            "samtools index {output.bam}; "
-            "umi_tools --version | sed 's/ version: /,/' >> {input.versions}"
+            "samtools index {output.bam}"
 
 
 if is_paired_end_experiment:
@@ -171,7 +163,6 @@ if is_paired_end_experiment:
         input:
             bam="results/mapped/{sample}.bam",
             bai="results/mapped/{sample}.bam.bai",
-            versions="results/qc/versions.txt",
         output:
             bam="results/deduplicated/{sample}.bam",
             bai="results/deduplicated/{sample}.bam.bai",
@@ -195,5 +186,4 @@ if is_paired_end_experiment:
             "--output-stats={log.stats} "
             "--log={log.path} 2> {log.stderr} | "
             "samtools sort -@ {threads} -O bam -T {params.tmp} -o {output.bam}; "
-            "samtools index {output.bam}; "
-            "umi_tools --version | sed 's/ version: /,/' >> {input.versions}"
+            "samtools index {output.bam}"

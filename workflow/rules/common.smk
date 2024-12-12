@@ -72,9 +72,7 @@ if not validate_experiment_type(a=is_single_end_experiment, b=is_paired_end_expe
 # set final output files
 # -----------------------------------------------------
 def get_final_output():
-    targets = []
-    targets.append("results/report/multiqc_report.html")
-    return targets
+    return "results/report/multiqc_report.html"
 
 
 # returns True if single-end
@@ -208,29 +206,14 @@ def get_stats_input(wildcards):
         )
 
 
-def yaml_versions_input():
-    inputs = []
-    inputs.append(
-        expand(
-            "results/qc/{status}_reads/{sample}",
-            status=["raw", "clipped"],
-            sample=samples.index,
-        ),
+# returns path to conda envs files
+def get_conda_envs_input():
+    wf_dir = os.path.abspath(workflow.basedir)
+    envs = []
+    envs.append(
+        expand(os.path.join(wf_dir, "envs", "{envs}"), envs=os.listdir(f"{wf_dir}/envs"))
     )
-    inputs.append(
-        expand(
-            "results/qc/{step}_alignment/{sample}.flagstat",
-            step=["mapped", "dedup"],
-            sample=samples.index,
-        )
-    )
-    inputs.append(
-        expand(
-            "results/qc/biotypes/{sample}.counts.summary",
-            sample=samples.index,
-        )
-    )
-    return list(itertools.chain.from_iterable(inputs))
+    return list(itertools.chain.from_iterable(envs))
 
 
 def construct_multiqc_input():
