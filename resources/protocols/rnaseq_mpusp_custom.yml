@@ -1,9 +1,9 @@
 samplesheet: "config/samplesheet/samples_mpusp_custom.tsv"
-libtype: "forward"
+libtype: "sense"
 
 get_genome:
   database: "ncbi"
-  assembly: "GCF_000006785.2"
+  assembly: "GCF_043231225.1"
   fasta: null
   gff: null
   gff_source_type:
@@ -66,7 +66,9 @@ feature_counts:
 
 deeptools:
   bin_size: 1
-  normalize: "CPM" # "RPKM"
+  normalize: "CPM"
+  defaults: "--exactScaling"
+  paired_end: "--extendReads"
 
 multiqc:
     config: "config/multiqc_config.yml"

@@ -1,9 +1,9 @@
 samplesheet: "config/samplesheet/samples.tsv"
-libtype: "forward"
+libtype: "antisense"
 
 get_genome:
   database: "ncbi"
-  assembly: "GCF_000006785.2"
+  assembly: "GCF_043231225.1"
   fasta: null
   gff: null
   gff_source_type:
@@ -30,7 +30,7 @@ cutadapt:
     ]
 
 star:
-  index: null
+  index: Null
   genomeSAindexNbases: 9
   multi: 10
   sam_multi: 1
@@ -63,13 +63,13 @@ feature_counts:
 
 deeptools:
   bin_size: 1
-  normalize: "CPM" # "RPKM"
-
+  normalize: "CPM"
+  defaults: "--exactScaling"
+  paired_end: "--extendReads"
 
 multiqc:
     config: "config/multiqc_config.yml"
-    defaults:
-      [
-        "--dirs-depth 2 ",
-        "--force"
-      ]
+    defaults: ["--dirs-depth 2 ",
+        "--exclude general_stats ",
+        "--force ",
+        "--dirs"]
