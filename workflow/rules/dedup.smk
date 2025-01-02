@@ -43,7 +43,7 @@ if is_single_end_experiment and (is_rnaseq_mpusp_custom or is_rnaseq_nextflex):
 
     rule umi_extract:
         input:
-            get_umi_input,
+            fastq=get_umi_input,
         output:
             fastq="results/umi_extraction/{sample}.fastq.gz",
         conda:
@@ -69,7 +69,7 @@ if is_paired_end_experiment and is_rnaseq_nextflex:
 
     rule umi_extract_pe:
         input:
-            get_umi_input,
+            fastqs=get_umi_input,
         output:
             R1="results/umi_extract/{sample}_R1.fastq.gz",
             R2="results/umi_extract/{sample}_R2.fastq.gz",
@@ -87,8 +87,8 @@ if is_paired_end_experiment and is_rnaseq_nextflex:
             "umi_tools extract "
             "--extract-method={params.method} "
             "{params.pattern} "
-            "--stdin={input[0]} "
-            "--read2-in={input[1]} "
+            "--stdin={input.fastqs[0]} "
+            "--read2-in={input.fastqs[1]} "
             "--stdout={output.R1} "
             "--read2-out={output.R2} "
             "--log={log.path} 2> {log.error}"
@@ -98,7 +98,7 @@ if is_paired_end_experiment and is_rnaseq_mpusp_custom:
 
     rule umi_extract_pe:
         input:
-            get_umi_input,
+            fastqs=get_umi_input,
         output:
             R1="results/umi_extract/{sample}_R1.fastq.gz",
             R2="results/umi_extract/{sample}_R2.fastq.gz",
@@ -116,8 +116,8 @@ if is_paired_end_experiment and is_rnaseq_mpusp_custom:
             "umi_tools extract "
             "--extract-method={params.method} "
             "--bc-pattern='{params.pattern}' "
-            "--stdin={input[0]} "
-            "--read2-in={input[1]} "
+            "--stdin={input.fastqs[0]} "
+            "--read2-in={input.fastqs[1]} "
             "--stdout={output.R1} "
             "--read2-out={output.R2} "
             "--log={log.path} 2> {log.error}"

@@ -95,7 +95,8 @@ rule star_mapping:
 # ---------------------------------------------------
 rule mapping_sorted_bam:
     input:
-        rules.star_mapping.output.bam,
+        bam=rules.star_mapping.output.bam,
+        versions="results/versions/log_conda_envs.txt",
     output:
         bam="results/mapped/{sample}.bam",
         bai="results/mapped/{sample}.bam.bai",
@@ -109,5 +110,6 @@ rule mapping_sorted_bam:
         tmp="results/mapped/sort_{sample}_tmp",
     threads: int(workflow.cores * 0.2)  # assign 20% of max cores
     shell:
-        "samtools sort -@ {threads} -O bam -T {params.tmp} -o {output.bam} {input} 2> {log}; "
-        "samtools index -@ {threads} {output.bam} 2>> {log}"
+        "samtools sort -@ {threads} -O bam -T {params.tmp} -o {output.bam} {input.bam} &> {log}; "
+        "samtools index -@ {threads} {output.bam} 2>> {log}; "
+        "samtools --version | head -n 2 | tail -n 1|sed 's/Using htslib /- htslib=/' >> {input.versions}"

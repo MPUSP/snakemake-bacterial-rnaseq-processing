@@ -1,0 +1,9 @@
+name: base
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - python=3.12.7
+  - pandas=2.2.3
+  - pyyaml=6.0.2
+  - snakemake=8.25.5

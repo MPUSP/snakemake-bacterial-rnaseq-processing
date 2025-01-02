@@ -1,6 +1,6 @@
-name: samtools
+name: deeptools
 channels:
   - conda-forge
   - bioconda
 dependencies:
-  - samtools=1.20
+  - deeptools=3.5.5

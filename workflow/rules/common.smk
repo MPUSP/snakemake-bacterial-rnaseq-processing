@@ -1,6 +1,7 @@
 import itertools
 import os
 import pandas as pd
+import yaml
 from snakemake.logging import logger
 
 
@@ -73,6 +74,14 @@ if not validate_experiment_type(a=is_single_end_experiment, b=is_paired_end_expe
 def get_final_output():
     targets = []
     targets.append("results/report/multiqc_report.html")
+    targets.append(
+        expand(
+            "results/{step}/wig_normalized/{sample}_cpm_{strand}.bw",
+            step=["mapped", "deduplicated"],
+            sample=samples.index,
+            strand=["plus", "minus"],
+        )
+    )
     return targets
 
 
@@ -207,6 +216,30 @@ def get_stats_input(wildcards):
         )
 
 
+# return bam files to generate coverage tracks
+def get_bigwig_input(wildcards):
+    if wildcards.step == "mapped":
+        return expand(
+            "results/mapped/{sample}.bam",
+            sample=wildcards.sample,
+        )
+    if wildcards.step == "deduplicated":
+        return expand(
+            "results/deduplicated/{sample}.bam",
+            sample=wildcards.sample,
+        )
+
+
+# returns path to conda envs files
+def get_conda_envs_input():
+    wf_dir = os.path.abspath(workflow.basedir)
+    envs = []
+    envs.append(
+        expand(os.path.join(wf_dir, "envs", "{envs}"), envs=os.listdir(f"{wf_dir}/envs"))
+    )
+    return list(itertools.chain.from_iterable(envs))
+
+
 def construct_multiqc_input():
     inputs = []
     inputs.append(
@@ -218,7 +251,7 @@ def construct_multiqc_input():
     )
     inputs.append(
         expand(
-            "results/qc/{step}_alignment/{sample}_stats.txt",
+            "results/qc/{step}_alignment/{sample}.flagstat",
             step=["mapped", "dedup"],
             sample=samples.index,
         )
@@ -230,3 +263,15 @@ def construct_multiqc_input():
         )
     )
     return list(itertools.chain.from_iterable(inputs))
+
+
+def define_multiqc_dirs():
+    dirs = []
+    prefix = "results"
+    dirs.append(os.path.join(prefix, "qc/raw_reads"))
+    dirs.append(os.path.join(prefix, "clipped"))
+    dirs.append(os.path.join(prefix, "qc/clipped_reads"))
+    dirs.append(os.path.join(prefix, "mapped/unsorted"))
+    dirs.append(os.path.join(prefix, "deduplicated"))
+    dirs.append(os.path.join(prefix, "qc/biotypes"))
+    return " ".join(dirs)

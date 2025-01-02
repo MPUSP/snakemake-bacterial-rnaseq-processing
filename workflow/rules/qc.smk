@@ -37,7 +37,7 @@ if is_paired_end_experiment:
         shell:
             "mkdir -p {output.report}; "
             "fastqc --nogroup --threads {threads} -o {output.report} -q {input.fastqs[0]} > {log}; "
-            "fastqc --nogroup --threads {threads} -o {output.report} -q {input.fastqs[1]} &> {log}; "
+            "fastqc --nogroup --threads {threads} -o {output.report} -q {input.fastqs[1]} &> {log}"
 
 
 # -----------------------------------------------------
@@ -45,9 +45,9 @@ if is_paired_end_experiment:
 # -----------------------------------------------------
 rule alignment_stats:
     input:
-        get_stats_input,
+        stats=get_stats_input,
     output:
-        "results/qc/{step}_alignment/{sample}_stats.txt",
+        "results/qc/{step}_alignment/{sample}.flagstat",
     conda:
         "../envs/samtools.yml"
     log:
@@ -56,7 +56,7 @@ rule alignment_stats:
         """--- Generate mapping statistics of BAM file using samtools."""
     threads: int(workflow.cores * 0.2)  # assign 20% of max cores
     shell:
-        "samtools flagstat -@ {threads} {input} > {output} 2> {log}"
+        "samtools flagstat -@ {threads} {input.stats} > {output} 2> {log}"
 
 
 # -----------------------------------------------------
@@ -78,11 +78,52 @@ rule qc_biotypes:
 
 
 # -----------------------------------------------------
+# module to extract software versions from conda envs
+# -----------------------------------------------------
+rule get_conda_envs:
+    input:
+        get_conda_envs_input(),
+    output:
+        "results/versions/log_conda_envs.txt",
+    conda:
+        "../envs/base.yml"
+    message:
+        """--- Extract software version from conda envs."""
+    log:
+        "results/versions/log/log_envs.log",
+    shell:
+        "conda env export > {log}; "
+        "cat {input} >> {output}"
+
+
+# -----------------------------------------------------
+# module to generate software version yaml file MultiQC
+# -----------------------------------------------------
+rule get_software_yaml:
+    input:
+        conda_envs="results/versions/log_conda_envs.txt",
+    output:
+        yaml="results/versions/rnaseq_preprocessinq_mqc_versions.yml",
+        multi_conf="results/qc/multiqc/multiqc_config.yml",
+    conda:
+        "../envs/base.yml"
+    message:
+        """--- Generate software version yaml file for MultiQC."""
+    log:
+        path="results/versions/log/yaml_versions.log",
+    params:
+        config=config["multiqc"]["config"],
+    script:
+        "../scripts/get_versions.py"
+
+
+# -----------------------------------------------------
 # module to run multiQC on input + processed files
 # -----------------------------------------------------
 rule multiqc:
     input:
         construct_multiqc_input(),
+        config="results/qc/multiqc/multiqc_config.yml",
     output:
         report="results/qc/multiqc/multiqc_report.html",
         final="results/report/multiqc_report.html",
@@ -94,14 +135,13 @@ rule multiqc:
         path="results/qc/multiqc/log/multiqc.log",
     params:
         defaults=config["multiqc"]["defaults"],
-        config=config["multiqc"]["config"],
         outdir=lambda w, output: os.path.split(output.report)[0],
         filename=lambda w, output: os.path.split(output.report)[1],
-        qc_dir=lambda w, output: os.path.dirname(os.path.split(output.report)[0]),
+        qc_dirs=define_multiqc_dirs(),
     shell:
         "multiqc {params.defaults} "
-        "--config {params.config} "
+        "--config {input.config} "
         "--outdir {params.outdir} "
         "--filename {params.filename} "
-        "{params.qc_dir} &> {log.path}; "
+        "--dirs {params.qc_dirs} &> {log.path}; "
         "cp {output.report} {output.final}"

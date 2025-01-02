@@ -1,9 +1,9 @@
 samplesheet: "config/samplesheet/samples_mpusp_custom.tsv"
-libtype: "forward"
+libtype: "sense"
 
 get_genome:
   database: "ncbi"
-  assembly: "GCF_000006785.2"
+  assembly: "GCF_043231225.1"
   fasta: null
   gff: null
   gff_source_type:
@@ -18,14 +18,13 @@ extract_features:
   biotypes: ["protein_coding", "pseudogene", "ncRNA", "rRNA", "tRNA"]
 
 umi_extraction:
-  method: "regex"
-  method: "regex"
-  pattern: "^(?P<umi_0>{.{3}[ATG]C[ATG].{3}[ATC]G[ATC]N.{3}T})"
+  method: "string"
+  pattern: "NNNXXXNNNXXXNNN"
 umi_dedup: "--edit-distance-threshold=0"
 
 cutadapt:
-  read1_adapter: "AGATCGGAAGAGCACACGTCTG"
-  read2_adapter: "ATGTGCTGCGAGAAGGCTA"
+  read1_adapter: "TACACGACGCTCTTCCGATCT"
+  read2_adapter: "AGATCGGAAGAGCGTCGTGTA"
   default:
     [
       "-q 10 ",
@@ -67,7 +66,9 @@ feature_counts:
 
 deeptools:
   bin_size: 1
-  normalize: "CPM" # "RPKM"
+  normalize: "CPM"
+  defaults: "--exactScaling"
+  paired_end: "--extendReads"
 
 multiqc:
     config: "config/multiqc_config.yml"
