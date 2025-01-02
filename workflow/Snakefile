@@ -3,7 +3,7 @@
 # read RNAseq data in bacteria.                         #
 #                                                       #
 # Authors: Rina Ahmed-Begrich                           #
-# Date: 2024-12-03                                      #
+# Date: 2025-01-02                                      #
 # License: MIT                                          #
 # ----------------------------------------------------- #
 import os
@@ -12,7 +12,7 @@ from subprocess import getoutput
 
 
 __author__ = "Rina Ahmed-Begrich"
-__year__ = "2024"
+__year__ = "2025"
 
 bold = "\033[1m"
 green = "\033[92m"
@@ -42,6 +42,7 @@ include: "rules/trim.smk"
 include: "rules/dedup.smk"
 include: "rules/mapping.smk"
 include: "rules/quantification.smk"
+include: "rules/coverage_tracks.smk"
 
 
 onstart:

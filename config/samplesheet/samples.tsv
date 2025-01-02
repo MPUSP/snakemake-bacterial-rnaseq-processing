@@ -1,3 +1,3 @@
 sample	condition	replicate	experiment	data_folder	fq1	fq2	fq_umi
-RNA-1	RNA	1	rnaseq_neb_umi	data/rnaseq_neb_umi	RNA-1_R1.fastq.gz	RNA-1_R2.fastq.gz	RNA-1_UMI.fastq.gz
-RNA-2	RNA	2	rnaseq_neb_umi	data/rnaseq_neb_umi	RNA-2_R1.fastq.gz	RNA-2_R2.fastq.gz	RNA-2_UMI.fastq.gz
+RNA-1	RNA	1	rnaseq_neb_umi	.test/data/rnaseq_neb_umi	RNA-1_R1.fastq.gz	RNA-1_R2.fastq.gz	RNA-1_UMI.fastq.gz
+RNA-2	RNA	2	rnaseq_neb_umi	.test/data/rnaseq_neb_umi	RNA-2_R1.fastq.gz	RNA-2_R2.fastq.gz	RNA-2_UMI.fastq.gz

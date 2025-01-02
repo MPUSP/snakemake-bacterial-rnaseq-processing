@@ -72,7 +72,17 @@ if not validate_experiment_type(a=is_single_end_experiment, b=is_paired_end_expe
 # set final output files
 # -----------------------------------------------------
 def get_final_output():
-    return "results/report/multiqc_report.html"
+    targets = []
+    targets.append("results/report/multiqc_report.html")
+    targets.append(
+        expand(
+            "results/{step}/wig_normalized/{sample}_cpm_{strand}.bw",
+            step=["mapped", "deduplicated"],
+            sample=samples.index,
+            strand=["plus", "minus"],
+        )
+    )
+    return targets
 
 
 # returns True if single-end
@@ -200,6 +210,20 @@ def get_stats_input(wildcards):
             sample=wildcards.sample,
         )
     if wildcards.step == "dedup":
+        return expand(
+            "results/deduplicated/{sample}.bam",
+            sample=wildcards.sample,
+        )
+
+
+# return bam files to generate coverage tracks
+def get_bigwig_input(wildcards):
+    if wildcards.step == "mapped":
+        return expand(
+            "results/mapped/{sample}.bam",
+            sample=wildcards.sample,
+        )
+    if wildcards.step == "deduplicated":
         return expand(
             "results/deduplicated/{sample}.bam",
             sample=wildcards.sample,
