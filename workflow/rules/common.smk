@@ -231,7 +231,7 @@ def get_bigwig_input(wildcards):
 
 
 # returns path to conda envs files
-def get_conda_envs_input():
+def get_conda_envs_files():
     wf_dir = os.path.abspath(workflow.basedir)
     envs = []
     envs.append(

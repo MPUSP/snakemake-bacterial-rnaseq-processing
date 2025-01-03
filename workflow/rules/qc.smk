@@ -81,19 +81,19 @@ rule qc_biotypes:
 # module to extract software versions from conda envs
 # -----------------------------------------------------
 rule get_conda_envs:
-    input:
-        get_conda_envs_input(),
     output:
         "results/versions/log_conda_envs.txt",
     conda:
         "../envs/base.yml"
     message:
         """--- Extract software version from conda envs."""
+    params:
+        conda_files=get_conda_envs_files(),
     log:
         "results/versions/log/log_envs.log",
     shell:
         "conda env export > {log}; "
-        "cat {input} >> {output}"
+        "cat {params.conda_files} >> {output}"
 
 
 # -----------------------------------------------------
