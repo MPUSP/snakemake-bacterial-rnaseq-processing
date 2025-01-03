@@ -28,7 +28,7 @@ rule normalize_bw:
         ),
         libtype=lambda wc: config["libtype"],
         strand=lambda wc: wc.strand,
-    threads: int(workflow.cores * 0.4)  # assign 40% of max cores
+    threads: int(workflow.cores * 0.2)  # assign 20% of max cores
     shell:
         "if [ {params.libtype} == 'sense' ] && [ {params.strand} == 'plus' ]; then "
         "strand=`echo -e 'reverse'`; "

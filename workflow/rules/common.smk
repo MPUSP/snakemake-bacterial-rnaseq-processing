@@ -234,9 +234,14 @@ def get_bigwig_input(wildcards):
 def get_conda_envs_files():
     wf_dir = os.path.abspath(workflow.basedir)
     envs = []
-    envs.append(
-        expand(os.path.join(wf_dir, "envs", "{envs}"), envs=os.listdir(f"{wf_dir}/envs"))
-    )
+    try:
+        envs.append(
+            expand(
+                os.path.join(wf_dir, "envs", "{envs}"), envs=os.listdir(f"{wf_dir}/envs")
+            )
+        )
+    except FileNotFoundError:
+        envs.append([""])
     return list(itertools.chain.from_iterable(envs))
 
 

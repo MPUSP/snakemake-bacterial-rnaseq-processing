@@ -7,8 +7,6 @@
 # License: MIT                                          #
 # ----------------------------------------------------- #
 import os
-import pandas as pd
-from subprocess import getoutput
 
 
 __author__ = "Rina Ahmed-Begrich"
