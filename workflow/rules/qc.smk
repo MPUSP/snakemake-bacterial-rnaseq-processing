@@ -88,12 +88,16 @@ rule get_conda_envs:
     message:
         """--- Extract software version from conda envs."""
     params:
-        conda_files=get_conda_envs_files(),
+        conda_files=" ".join(get_conda_envs_files()),
+        conda_envs_log=workflow.source_path("../../resources/conda_envs/conda_envs.log"),
     log:
         "results/versions/log/log_envs.log",
     shell:
         "conda env export > {log}; "
-        "cat {params.conda_files} >> {output}"
+        "if [ '{params.conda_files}' == '' ]; then "
+        "cat {params.conda_envs_log} > {output}; "
+        "else cat {params.conda_files} > {output}; "
+        "fi;"
 
 
 # -----------------------------------------------------
