@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.2](https://github.com/MPUSP/snakemake-bacterial-rnaseq-preprocessing/compare/v1.1.1...v1.1.2) (2025-01-03)
+
+
+### Bug Fixes
+
+* catch exception in rule 'get_conda_envs' when executing workflow remotely ([0bee102](https://github.com/MPUSP/snakemake-bacterial-rnaseq-preprocessing/commit/0bee1023705212bc4b38a7dee70fbf9a0679e9ba))
+
 ## [1.1.1](https://github.com/MPUSP/snakemake-bacterial-rnaseq-preprocessing/compare/v1.1.0...v1.1.1) (2025-01-03)
 
 
