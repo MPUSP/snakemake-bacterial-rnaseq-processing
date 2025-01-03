@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1](https://github.com/MPUSP/snakemake-bacterial-rnaseq-preprocessing/compare/v1.1.0...v1.1.1) (2025-01-03)
+
+
+### Bug Fixes
+
+* problem with rerun of dag grpah due to version extraction in sorting rule ([6bb5282](https://github.com/MPUSP/snakemake-bacterial-rnaseq-preprocessing/commit/6bb5282611b391a39613043d62635cc80385c836))
+
 ## [1.1.0](https://github.com/MPUSP/snakemake-bacterial-rnaseq-preprocessing/compare/v1.0.0...v1.1.0) (2025-01-02)
 
 
