@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.1.3](https://github.com/MPUSP/snakemake-bacterial-rnaseq-preprocessing/compare/v1.1.2...v1.1.3) (2025-01-10)
+
+
+### Bug Fixes
+
+* change module order in multiqc also in test multiqc_config; closes [#18](https://github.com/MPUSP/snakemake-bacterial-rnaseq-preprocessing/issues/18) ([92e5a42](https://github.com/MPUSP/snakemake-bacterial-rnaseq-preprocessing/commit/92e5a422d69877f5da196ed8ae7b5e5890db1d82))
+* change module order in multiqc report ([bda4cae](https://github.com/MPUSP/snakemake-bacterial-rnaseq-preprocessing/commit/bda4cae7bb12a8f10992cb6704d94faae960496c))
+* correct libtype and read piar counting parameter when quantifying biotypes; closes [#17](https://github.com/MPUSP/snakemake-bacterial-rnaseq-preprocessing/issues/17); closes [#19](https://github.com/MPUSP/snakemake-bacterial-rnaseq-preprocessing/issues/19) ([9413dc0](https://github.com/MPUSP/snakemake-bacterial-rnaseq-preprocessing/commit/9413dc033c3116db90f0b77abad6d61f515cacd9))
+
 ## [1.1.2](https://github.com/MPUSP/snakemake-bacterial-rnaseq-preprocessing/compare/v1.1.1...v1.1.2) (2025-01-03)
 
 
