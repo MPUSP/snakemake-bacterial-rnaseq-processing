@@ -59,7 +59,7 @@ if is_single_end_experiment:
             defaults=config["feature_counts"]["defaults"],
             libtype=config["libtype"],
         shell:
-            "if [ {params.libtype} == 'forward' ]; then "
+            "if [ {params.libtype} == 'sense' ]; then "
             "libtype=`echo -e '-s 1'`; "
             "else libtype=`echo -e '-s 2'`; "
             "fi; "
@@ -91,7 +91,7 @@ if is_paired_end_experiment:
             defaults=config["feature_counts"]["defaults"],
             libtype=config["libtype"],
         shell:
-            "if [ {params.libtype} == 'forward' ]; then "
+            "if [ {params.libtype} == 'sense' ]; then "
             "libtype=`echo -e '-s 1'`; "
             "else libtype=`echo -e '-s 2'`; "
             "fi; "
@@ -99,6 +99,6 @@ if is_paired_end_experiment:
             "{params.defaults} "
             "${{libtype}} "
             "-a {input.gtf} "
-            "-p "
+            "-p --countReadPairs "
             "-o {output.counts} "
             "{input.bam} &> {log.path}"

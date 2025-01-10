@@ -18,7 +18,9 @@ cyan = "\033[36m"
 end = "\033[0m"
 
 msg = f"""{cyan}Bacterial-rnaseq-preprocessing: A Snakemake workflow
-for the preprocessing of short read RNAseq data in bacteria.{end}"""
+for the preprocessing of short read RNAseq data in bacteria.{end}
+
+"""
 
 epilog = f"""{cyan}Written by {__author__},
 Max Planck Unit for the Science of Pathogens. Copyright (c) {__year__}.

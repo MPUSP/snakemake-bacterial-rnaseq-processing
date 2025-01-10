@@ -4,7 +4,7 @@ report_header_info:
   - Sequencing Platform: "Illumina"
   - Sequencing Setup: "Total RNAseq"
 
-title: "Bacterial RNAseq"
+title: "Bacterial RNAseq processing"
 subtitle: "A Snakemake workflow for the analysis of RNAseq data in bacteria."
 intro_text: ""
 
@@ -24,6 +24,7 @@ remove_sections:
   - samtools-stats
 
 module_order:
+  - star
   - cutadapt
   - fastqc:
       name: "FastQC (trimmed)"
