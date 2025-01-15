@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.2.0](https://github.com/MPUSP/snakemake-bacterial-rnaseq-preprocessing/compare/v1.1.3...v1.2.0) (2025-01-15)
+
+
+### Features
+
+* included module for fastq truncation after trimming for nextflex library kits. fixed various issues when runnning in single-end mode; closes [#22](https://github.com/MPUSP/snakemake-bacterial-rnaseq-preprocessing/issues/22) ([6558f0b](https://github.com/MPUSP/snakemake-bacterial-rnaseq-preprocessing/commit/6558f0bd5e869c41c87a960901333e1e5616b63e))
+
+
+### Bug Fixes
+
+* corrected umi configuration in config for mpusp custom library prep. ([f6e6c51](https://github.com/MPUSP/snakemake-bacterial-rnaseq-preprocessing/commit/f6e6c51c2122a37d20ee0d589462a314b2f36212))
+
 ## [1.1.3](https://github.com/MPUSP/snakemake-bacterial-rnaseq-preprocessing/compare/v1.1.2...v1.1.3) (2025-01-10)
 
 
