@@ -1,8 +1,8 @@
-# -----------------------------------------------------
-# module to trim adapters from reads
-# -----------------------------------------------------
 if is_single_end_experiment:
 
+    # -----------------------------------------------------
+    # module to trim adapters from reads
+    # -----------------------------------------------------
     rule cutadapt:
         input:
             fastq=get_trimming_input,
@@ -26,8 +26,37 @@ if is_single_end_experiment:
             "{input.fastq} &> {log.path}"
 
 
+if is_single_end_experiment and is_rnaseq_nextflex:
+
+    # -----------------------------------------------------
+    # module to remove 4nt from 3' end of reads
+    # -----------------------------------------------------
+    rule truncate_fastq:
+        input:
+            fastq=get_trunc_input,
+        output:
+            "results/trunc_fastq/{sample}.fastq.gz",
+        conda:
+            "../envs/cutadapt.yml"
+        message:
+            """--- Trim 4nt from 3' end of reads."""
+        log:
+            path="results/trunc_fastq/log/{sample}.log",
+        params:
+            default=config["trunc_fastq"]["default"],
+        threads: int(workflow.cores * 0.4)  # assign 40% of max cores
+        shell:
+            "cutadapt --cores {threads} "
+            "{params.default} "
+            "-o {output} "
+            "{input.fastq} &> {log.path}"
+
+
 if is_paired_end_experiment:
 
+    # -----------------------------------------------------
+    # module to trim adapters from paired-end reads
+    # -----------------------------------------------------
     rule cutadapt_pe:
         input:
             fastqs=get_trimming_input,
@@ -57,4 +86,31 @@ if is_paired_end_experiment:
             "{params.input_str} &> {log.path}"
 
 
-# NOTE: for rnaseq_nextflex mode after clipping, 4 nt need to be removed from the 3p end -> use cutadapt -u='-4' -U='-4'
+if is_paired_end_experiment and is_rnaseq_nextflex:
+
+    # -----------------------------------------------------
+    # module to remove 4nt from 3' end of paired-end reads
+    # -----------------------------------------------------
+    rule truncate_fastq_pe:
+        input:
+            fastqs=get_trunc_input,
+        output:
+            R1="results/trunc_fastq/{sample}_R1.fastq.gz",
+            R2="results/trunc_fastq/{sample}_R2.fastq.gz",
+        conda:
+            "../envs/cutadapt.yml"
+        message:
+            """--- Trim 4nt from 3' end of reads."""
+        log:
+            path="results/trunc_fastq/log/{sample}.log",
+        params:
+            default=config["trunc_fastq"]["default"],
+            input_str=lambda w, input: (
+                " ".join(input.fastqs) if len(input.fastqs) == 2 else input.fastqs
+            ),
+        threads: int(workflow.cores * 0.4)  # assign 40% of max cores
+        shell:
+            "cutadapt --cores {threads} "
+            "{params.default} "
+            "-o {output.R1} -p {output.R2} "
+            "{params.input_str} &> {log.path}"

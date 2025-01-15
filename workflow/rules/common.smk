@@ -185,16 +185,45 @@ def get_trimming_input(wildcards):
     return list(itertools.chain.from_iterable(inputs))
 
 
+# returns fastq files for truncation post trimming
+def get_trunc_input(wildcards):
+    """Get FASTQ files for trunction post trimming."""
+    inputs = []
+    if is_single_end_experiment:
+        inputs.append(expand("results/clipped/{sample}.fastq.gz", sample=wildcards.sample))
+    elif is_paired_end_experiment:
+        inputs.append(
+            expand(
+                "results/clipped/{sample}_{read}.fastq.gz",
+                sample=wildcards.sample,
+                read=["R1", "R2"],
+            )
+        )
+    return list(itertools.chain.from_iterable(inputs))
+
+
 # returns fastq files for mapping
 def get_mapping_input(wildcards):
     """Get FASTQ files for trimming."""
     inputs = []
     if is_single_end_experiment and (is_rnaseq_mpusp_custom or is_rnaseq_neb_umi):
         inputs.append(expand("results/clipped/{sample}.fastq.gz", sample=wildcards.sample))
-    elif is_paired_end_experiment:
+    elif is_single_end_experiment and is_rnaseq_nextflex:
+        inputs.append(
+            expand("results/trunc_fastq/{sample}.fastq.gz", sample=wildcards.sample)
+        )
+    elif is_paired_end_experiment and (is_rnaseq_mpusp_custom or is_rnaseq_neb_umi):
         inputs.append(
             expand(
-                "results/umi_extract/{sample}_{read}.fastq.gz",
+                "results/clipped/{sample}_{read}.fastq.gz",
+                sample=wildcards.sample,
+                read=["R1", "R2"],
+            )
+        )
+    elif is_paired_end_experiment and is_rnaseq_nextflex:
+        inputs.append(
+            expand(
+                "results/trunc_fastq/{sample}_{read}.fastq.gz",
                 sample=wildcards.sample,
                 read=["R1", "R2"],
             )

@@ -19,7 +19,7 @@ extract_features:
 
 umi_extraction:
   method: "string"
-  pattern: "NNNXXXNNNXXXNNN"
+  pattern: "--bc-pattern=NNNCCCNNNCCCNNNC"
 umi_dedup: "--edit-distance-threshold=0"
 
 cutadapt:
@@ -33,7 +33,7 @@ cutadapt:
     ]
 
 star:
-  index: null
+  index: Null
   genomeSAindexNbases: 9
   multi: 10
   sam_multi: 1
@@ -70,11 +70,9 @@ deeptools:
   defaults: "--exactScaling"
   paired_end: "--extendReads"
 
-
 multiqc:
     config: "config/multiqc_config.yml"
-    defaults:
-      [
-        "--dirs-depth 2 ",
-        "--force"
-      ]
+    defaults: ["--dirs-depth 2 ",
+        "--exclude general_stats ",
+        "--force ",
+        "--dirs"]

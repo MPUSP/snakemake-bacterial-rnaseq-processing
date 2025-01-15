@@ -45,7 +45,7 @@ if is_single_end_experiment and (is_rnaseq_mpusp_custom or is_rnaseq_nextflex):
         input:
             fastq=get_umi_input,
         output:
-            fastq="results/umi_extraction/{sample}.fastq.gz",
+            fastq="results/umi_extract/{sample}.fastq.gz",
         conda:
             "../envs/umitools.yml"
         message:
@@ -65,7 +65,7 @@ if is_single_end_experiment and (is_rnaseq_mpusp_custom or is_rnaseq_nextflex):
             "--log={log.path} 2> {log.error}"
 
 
-if is_paired_end_experiment and is_rnaseq_nextflex:
+if is_paired_end_experiment and (is_rnaseq_mpusp_custom or is_rnaseq_nextflex):
 
     rule umi_extract_pe:
         input:
@@ -94,35 +94,6 @@ if is_paired_end_experiment and is_rnaseq_nextflex:
             "--log={log.path} 2> {log.error}"
 
 
-if is_paired_end_experiment and is_rnaseq_mpusp_custom:
-
-    rule umi_extract_pe:
-        input:
-            fastqs=get_umi_input,
-        output:
-            R1="results/umi_extract/{sample}_R1.fastq.gz",
-            R2="results/umi_extract/{sample}_R2.fastq.gz",
-        conda:
-            "../envs/umitools.yml"
-        message:
-            """--- Extracting UMIs."""
-        params:
-            method=config["umi_extraction"]["method"],
-            pattern=lambda wc: config["umi_extraction"]["pattern"],
-        log:
-            path="results/umi_extract/log/{sample}.log",
-            error="results/umi_extract/log/{sample}.err",
-        shell:
-            "umi_tools extract "
-            "--extract-method={params.method} "
-            "--bc-pattern='{params.pattern}' "
-            "--stdin={input.fastqs[0]} "
-            "--read2-in={input.fastqs[1]} "
-            "--stdout={output.R1} "
-            "--read2-out={output.R2} "
-            "--log={log.path} 2> {log.error}"
-
-
 # ---------------------------------------------
 # module to deduplicate reads via UMIs
 # ---------------------------------------------
@@ -131,10 +102,10 @@ if is_single_end_experiment:
     rule umi_dedup:
         input:
             bam="results/mapped/{sample}.bam",
-            bai="results/mapped/{sample}.bai",
+            bai="results/mapped/{sample}.bam.bai",
         output:
             bam="results/deduplicated/{sample}.bam",
-            bai="results/deduplicated/{sample}.bai",
+            bai="results/deduplicated/{sample}.bam.bai",
         conda:
             "../envs/umitools.yml"
         message:

@@ -19,7 +19,7 @@ extract_features:
 
 umi_extraction:
   method: "string"
-  pattern: "NNNXXXNNNXXXNNN"
+  pattern: "--bc-pattern=NNNCCCNNNCCCNNNC"
 umi_dedup: "--edit-distance-threshold=0"
 
 cutadapt:
