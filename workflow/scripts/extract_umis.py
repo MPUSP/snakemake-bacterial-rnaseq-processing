@@ -61,7 +61,7 @@ if is_paired_end:
     log += ["Processing R2 ..."]
     extract_umi(R1=file_r2, R2=file_umis, output=output_r2, log=log, error=error)
 else:
-    extract_umi(R1=file_r1, R2=file_umis, output=output_r1)
+    extract_umi(R1=file_r1, R2=file_umis, output=output_r1, log=log, error=error)
 
 
 # print error / log messages

@@ -22,13 +22,16 @@ umi_extraction:
   pattern:
     [
       "--bc-pattern=NNNN ",
-      "--bc-pattern2=NNNN",
+      "--bc-pattern2=NNNN"
     ]
 umi_dedup: "--edit-distance-threshold=0"
 
-trunc_fastq_params:
-   default:
-       ["-3p 4"]
+trunc_fastq:
+  default:
+    [
+      "-u='-4' ",
+      "-U='-4'"
+    ]
 
 cutadapt:
   read1_adapter: "TGGAATTCTCGGGTGCCAAGGAACTCCAGTCAC"
