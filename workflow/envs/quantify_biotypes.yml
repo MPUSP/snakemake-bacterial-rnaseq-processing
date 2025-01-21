@@ -1,0 +1,7 @@
+name: quantify_biotypes
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - python=3.12.7
+  - pandas=2.2.3

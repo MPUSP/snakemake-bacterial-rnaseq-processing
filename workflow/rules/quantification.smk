@@ -102,3 +102,24 @@ if is_paired_end_experiment:
             "-p --countReadPairs "
             "-o {output.counts} "
             "{input.bam} &> {log.path}"
+
+
+# -----------------------------------------------------------
+# module to combine count tables and add feature information
+# -----------------------------------------------------------
+rule combine_count_tables:
+    input:
+        counts=expand("results/quantify_biotypes/{sample}.counts", sample=samples.index),
+        gtf="results/extracted_features/biotypes.gtf",
+    output:
+        table="results/quantify_biotypes/all_samples_counts.tsv",
+    conda:
+        "../envs/quantify_biotypes.yml"
+    message:
+        """--- Combine count tables for all samples."""
+    log:
+        path="results/quantify_biotypes/log/merge_counts.log",
+    params:
+        samples=samples.index,
+    script:
+        "../scripts/merge_counts.py"

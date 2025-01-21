@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/python
 
 # GFF2GTF
 # -----------------------------------------------------------------------------
@@ -26,7 +26,7 @@ def gff_to_gtf(gff_file, gtf_file, error):
             in_handle.seek(0)
             strand = ""
             records = GFF.parse(in_handle)
-            attr_list = ["ID", "Name", "gene_biotype", "locus_tag"]
+            attr_list = ["ID", "Name", "gene_biotype", "locus_tag", "trivial_name"]
 
             # Iterate over features and write to the GTF file
             for record in records:
