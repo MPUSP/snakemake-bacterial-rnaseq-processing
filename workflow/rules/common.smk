@@ -82,7 +82,7 @@ def get_final_output():
             strand=["plus", "minus"],
         )
     )
-    targets.append("results/quantify_biotypes/all_samples_counts.tsv")
+    targets.append("results/quantify_biotypes/all_samples_biotype_counts.tsv")
     return targets
 
 

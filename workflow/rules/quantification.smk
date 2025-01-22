@@ -110,6 +110,9 @@ if is_paired_end_experiment:
 rule combine_count_tables:
     input:
         counts=expand("results/quantify_biotypes/{sample}.counts", sample=samples.index),
+        summary=expand(
+            "results/quantify_biotypes/{sample}.counts.summary", sample=samples.index
+        ),
         gtf="results/extracted_features/biotypes.gtf",
     output:
         table="results/quantify_biotypes/all_samples_counts.tsv",
@@ -123,3 +126,25 @@ rule combine_count_tables:
         samples=samples.index,
     script:
         "../scripts/merge_counts.py"
+
+
+# -----------------------------------------------------------
+# module to summarize biotype biotype distributions
+# -----------------------------------------------------------
+rule summarize_biotypes:
+    input:
+        table="results/quantify_biotypes/all_samples_counts.tsv",
+    output:
+        tab_counts="results/quantify_biotypes/all_samples_biotype_counts.tsv",
+        tab_fractions="results/quantify_biotypes/all_samples_biotype_fraction.tsv",
+        fig="results/quantify_biotypes/all_samples_biotypes.pdf",
+    conda:
+        "../envs/quantify_biotypes.yml"
+    message:
+        """--- Summarize fraction of biotypes for all samples."""
+    log:
+        path="results/quantify_biotypes/log/summarize_biotypes.log",
+    params:
+        samples=samples.index,
+    script:
+        "../scripts/summarize_biotypes.py"
