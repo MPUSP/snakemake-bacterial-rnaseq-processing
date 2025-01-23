@@ -80,14 +80,14 @@ try:
     for t, sample in zip(summary, sample_names):
         t.columns = [sample]
     log += ["FeatureCounts summary tables imported."]
-except ValueError:
+except OSError:
     error += [
         f"Pandas read table error when reading '{input_summary}'. Usecols do not match colums."
     ]
 
 df_summary = pd.concat(summary, axis=1, sort=False)
 df_no_feat = pd.DataFrame(
-    3 * ["unassigned_noFeature"] + df_summary.loc["Unassigned_NoFeatures"].to_list()
+    3 * ["Unassigned"] + df_summary.drop(index="Assigned").sum().to_list()
 ).transpose()
 df_final = df_final.reset_index()
 

@@ -82,7 +82,6 @@ def get_final_output():
             strand=["plus", "minus"],
         )
     )
-    targets.append("results/quantify_biotypes/all_samples_biotype_counts.tsv")
     return targets
 
 
@@ -297,6 +296,7 @@ def construct_multiqc_input():
             sample=samples.index,
         )
     )
+    inputs.append(["results/qc/biotypes/barplot_biotype_data_mqc.json"])
     return list(itertools.chain.from_iterable(inputs))
 
 
