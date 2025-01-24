@@ -54,7 +54,7 @@ if is_single_end_experiment:
             """--- Quantify biotpyes with subread's featureCount."""
         log:
             path="results/quantify_biotypes/log/feature_counts_{sample}.log",
-        threads: int(workflow.cores * 0.4) if int(workflow.cores * 0.4) <= 64 else 64  # assign 40% of max cores
+        threads: int(workflow.cores * 0.2) if int(workflow.cores * 0.2) <= 64 else 64  # assign 40% of max cores
         params:
             defaults=config["feature_counts"]["defaults"],
             libtype=config["libtype"],
@@ -86,7 +86,7 @@ if is_paired_end_experiment:
             """--- Quantify biotpyes with subread's featureCount."""
         log:
             path="results/quantify_biotypes/log/feature_counts_{sample}.log",
-        threads: int(workflow.cores * 0.4) if int(workflow.cores * 0.4) <= 64 else 64  # assign 40% of max cores
+        threads: int(workflow.cores * 0.2) if int(workflow.cores * 0.2) <= 64 else 64  # assign 40% of max cores
         params:
             defaults=config["feature_counts"]["defaults"],
             libtype=config["libtype"],
@@ -129,7 +129,7 @@ rule combine_count_tables:
 
 
 # -----------------------------------------------------------
-# module to summarize biotype biotype distributions
+# module to summarize biotype distributions
 # -----------------------------------------------------------
 rule summarize_biotypes:
     input:
@@ -137,11 +137,10 @@ rule summarize_biotypes:
     output:
         tab_counts="results/quantify_biotypes/all_samples_biotype_counts.tsv",
         tab_fractions="results/quantify_biotypes/all_samples_biotype_fraction.tsv",
-        fig="results/quantify_biotypes/all_samples_biotypes.pdf",
     conda:
         "../envs/quantify_biotypes.yml"
     message:
-        """--- Summarize fraction of biotypes for all samples."""
+        """--- Extract fraction of biotypes for all samples."""
     log:
         path="results/quantify_biotypes/log/summarize_biotypes.log",
     params:
