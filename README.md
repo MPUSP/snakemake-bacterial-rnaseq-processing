@@ -1,15 +1,16 @@
-# <a id="anchortitle" />Snakemake workflow: bacterial-rnaseq-preprocessing
+# <a id="anchortitle" />Snakemake workflow: bacterial-rnaseq-processing
 
+![Platform](https://img.shields.io/badge/platform-all-green)
 [![Snakemake](https://img.shields.io/badge/snakemake-≥8.0.0-brightgreen.svg)](https://snakemake.github.io)
-[![Tests](https://github.com/MPUSP/snakemake-bacterial-rnaseq-preprocessing/actions/workflows/main.yml/badge.svg)](https://github.com/MPUSP/snakemake-bacterial-rnaseq-preprocessing/actions/workflows/main.yml)
+[![Tests](https://github.com/MPUSP/snakemake-bacterial-rnaseq-processing/actions/workflows/main.yml/badge.svg)](https://github.com/MPUSP/snakemake-bacterial-rnaseq-processing/actions/workflows/main.yml)
 [![run with conda](http://img.shields.io/badge/run%20with-conda-3EB049?labelColor=000000&logo=anaconda)](https://docs.conda.io/en/latest/)
 [![workflow catalog](https://img.shields.io/badge/Snakemake%20workflow%20catalog-darkgreen)](https://snakemake.github.io/snakemake-workflow-catalog)
 
 ------------------------------------------------------------------------
 
-A Snakemake workflow for the preprocessing of short read rnaseq data in bacteria.
+A Snakemake workflow for the processing of short read rnaseq data in bacteria.
 
--   [Bacterial RNAseq preprocessing](#anchortitle)
+-   [Bacterial RNAseq processing](#anchortitle)
     -   [Usage](#usage)
     -   [Workflow overview](#workflow-overview)
     -   [Installation](#installation)
@@ -22,13 +23,13 @@ A Snakemake workflow for the preprocessing of short read rnaseq data in bacteria
 
 ## Usage
 
-The usage of this workflow is described in the [Snakemake Workflow Catalog](https://snakemake.github.io/snakemake-workflow-catalog/?usage=MPUSP%2Fsnakemake-bacterial-rnaseq-preprocessing).
+The usage of this workflow is described in the [Snakemake Workflow Catalog](https://snakemake.github.io/snakemake-workflow-catalog/?usage=MPUSP%2Fsnakemake-bacterial-rnaseq-processing).
 
 If you use this workflow in a paper, don't forget to give credits to the authors by citing the URL of this (original) <repo>sitory and its DOI (see above).
 
 ## Workflow overview
 
-This workflow is a best-practice workflow for the preprocessing of short read sequencing data in bacteria. The workflow is built using [snakemake](https://snakemake.readthedocs.io/en/stable/) and consists of the following steps:
+This workflow is a best-practice workflow for the processing of short read sequencing data in bacteria. The workflow is built using [snakemake](https://snakemake.readthedocs.io/en/stable/) and consists of the following steps:
 
 1. Obtain genome database in `fasta` and `gff` format (`python`, [NCBI Datasets](https://www.ncbi.nlm.nih.gov/datasets/docs/v2/))
    1. Using automatic download from NCBI with a `RefSeq` ID
@@ -39,8 +40,9 @@ This workflow is a best-practice workflow for the preprocessing of short read se
 5. Map reads to the reference genome ([STAR aligner](https://github.com/alexdobin/STAR))
 6. Sort and index aligned rnaseq data ([Samtools](http://www.htslib.org/))
 7. Deduplicate reads by unique molecular identifier (UMI, [UMI-tools](https://umi-tools.readthedocs.io/en/latest/))
-8. Quantify biotype features ([featureCounts](https://subread.sourceforge.net/featureCounts.html))
-9. Generate summary report for all processing steps ([MultiQC](https://seqera.io/multiqc/))
+8. Generate cpm normalized coverage files ([deepTools](https://deeptools.readthedocs.io/en/latest/))
+9. Quantify biotype features ([featureCounts](https://subread.sourceforge.net/featureCounts.html))
+10. Generate summary report for all processing steps ([MultiQC](https://seqera.io/multiqc/))
 
 ---
 
@@ -52,8 +54,8 @@ This workflow is a best-practice workflow for the preprocessing of short read se
 **Step 1: Clone this repository**
 
 ``` bash
-git clone https://github.com/MPUSP/snakemake-bacterial-rnaseq-preprocessing.git
-cd snakemake-bacterial-rnaseq-preprocessing
+git clone https://github.com/MPUSP/snakemake-bacterial-rnaseq-processing.git
+cd snakemake-bacterial-rnaseq-processing
 ```
 
 **Step 2: Install dependencies**
@@ -62,12 +64,12 @@ It is recommended to install snakemake and run the workflow with `conda` or `mam
 
 **Step 3: Create snakemake environment**
 
-This step creates a new conda environment called `snakemake-bacterial-rnaseq-preprocessing`.
+This step creates a new conda environment called `snakemake-bacterial-rnaseq-processing`.
 
 ``` bash
 # create new environment with dependencies & activate it
-mamba create -c conda-forge -c bioconda -n snakemake-bacterial-rnaseq-preprocessing snakemake pandas python=3.12
-conda activate snakemake-bacterial-rnaseq-preprocessing
+mamba create -c conda-forge -c bioconda -n snakemake-bacterial-rnaseq-processing snakemake pandas python=3.12
+conda activate snakemake-bacterial-rnaseq-processing
 ```
 
 **Note:**
@@ -80,7 +82,7 @@ This step creates all conda environments specified in the snakemake rules. This 
 
 ``` bash
 # activate new environment
-conda activate snakemake-bacterial-rnaseq-preprocessing
+conda activate snakemake-bacterial-rnaseq-processing
 snakemake -c 1 --sdm conda --conda-create-envs-only --conda-cleanup-pkgs cache
 ```
 
@@ -117,7 +119,7 @@ Currently, we support example configurations for three different sequencing prot
 To run the workflow from command line, change the working directory.
 
 ``` bash
-cd snakemake-bacterial-rnaseq-preprocessing
+cd snakemake-bacterial-rnaseq-processing
 ```
 
 To run the complete workflow with test files using **`conda`**, execute the following command. The definition of the number of compute cores is mandatory.
