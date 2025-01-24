@@ -54,7 +54,7 @@ if is_single_end_experiment:
             """--- Quantify biotpyes with subread's featureCount."""
         log:
             path="results/quantify_biotypes/log/feature_counts_{sample}.log",
-        threads: int(workflow.cores * 0.2) if int(workflow.cores * 0.2) <= 64 else 64  # assign 40% of max cores
+        threads: min(max(1, int(workflow.cores * 0.2)), 64)  # assign 20% of max cores
         params:
             defaults=config["feature_counts"]["defaults"],
             libtype=config["libtype"],
@@ -86,7 +86,7 @@ if is_paired_end_experiment:
             """--- Quantify biotpyes with subread's featureCount."""
         log:
             path="results/quantify_biotypes/log/feature_counts_{sample}.log",
-        threads: int(workflow.cores * 0.2) if int(workflow.cores * 0.2) <= 64 else 64  # assign 40% of max cores
+        threads: min(max(1, int(workflow.cores * 0.2)), 64)  # assign 20% of max cores
         params:
             defaults=config["feature_counts"]["defaults"],
             libtype=config["libtype"],
