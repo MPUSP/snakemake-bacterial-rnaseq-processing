@@ -1,5 +1,23 @@
 # Changelog
 
+## [1.3.0](https://github.com/MPUSP/snakemake-bacterial-rnaseq-preprocessing/compare/v1.2.0...v1.3.0) (2025-01-24)
+
+
+### Features
+
+* add biotype distribution plot to multiQC report; closes [#5](https://github.com/MPUSP/snakemake-bacterial-rnaseq-preprocessing/issues/5) ([b29d722](https://github.com/MPUSP/snakemake-bacterial-rnaseq-preprocessing/commit/b29d722f9ad92ccb0da8b73c305657587a899bbb))
+* add module to merge feature count files. Included biotype information; closes [#25](https://github.com/MPUSP/snakemake-bacterial-rnaseq-preprocessing/issues/25) ([89abb02](https://github.com/MPUSP/snakemake-bacterial-rnaseq-preprocessing/commit/89abb02b0daf07a1c89f5a2fd8741348d935ccd2))
+* added module to summarize biotype distribution. ([e08b53e](https://github.com/MPUSP/snakemake-bacterial-rnaseq-preprocessing/commit/e08b53e5cf61a6f3c6379083dc0011da507889fc))
+* update github actions workflow ([b3e9bb5](https://github.com/MPUSP/snakemake-bacterial-rnaseq-preprocessing/commit/b3e9bb51f0919fc5ed525645a3d3b501acf2b3fe))
+* update github actions workflow. check formatting of yaml files with prettier ([318eca2](https://github.com/MPUSP/snakemake-bacterial-rnaseq-preprocessing/commit/318eca2ec4252091c1aa286d90c41c33052dce74))
+
+
+### Bug Fixes
+
+* correct core assignment issue when using featureCounts ([5bc9d36](https://github.com/MPUSP/snakemake-bacterial-rnaseq-preprocessing/commit/5bc9d362c90fe3a903a1f4c81bbc66fb2ae67b19))
+* small updates on github action workflows ([b7248d4](https://github.com/MPUSP/snakemake-bacterial-rnaseq-preprocessing/commit/b7248d47bd2f0fa2b708e1dbb59aa7b11f683cd2))
+* updated conda env log ([d092a53](https://github.com/MPUSP/snakemake-bacterial-rnaseq-preprocessing/commit/d092a538d57da47871fe78deeebd6432913ec3b8))
+
 ## [1.2.0](https://github.com/MPUSP/snakemake-bacterial-rnaseq-preprocessing/compare/v1.1.3...v1.2.0) (2025-01-15)
 
 
