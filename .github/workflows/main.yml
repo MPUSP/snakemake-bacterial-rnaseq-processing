@@ -21,6 +21,7 @@ jobs:
           DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VALIDATE_SNAKEMAKE_SNAKEFMT: true
+          VALIDATE_YAML_PRETTIER: true
 
   Linting:
     runs-on: ubuntu-latest
@@ -42,7 +43,6 @@ jobs:
       - Formatting
     steps:
       - uses: actions/checkout@v4
-
       - name: Test workflow
         uses: snakemake/snakemake-github-action@v1.25.1
         with:
