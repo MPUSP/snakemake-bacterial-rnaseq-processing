@@ -54,7 +54,7 @@ if is_single_end_experiment:
             """--- Quantify biotpyes with subread's featureCount."""
         log:
             path="results/quantify_biotypes/log/feature_counts_{sample}.log",
-        threads: int(workflow.cores * 0.4) if int(workflow.cores * 0.4) <= 64 else 64  # assign 40% of max cores
+        threads: min(max(1, int(workflow.cores * 0.2)), 64)  # assign 20% of max cores
         params:
             defaults=config["feature_counts"]["defaults"],
             libtype=config["libtype"],
@@ -86,7 +86,7 @@ if is_paired_end_experiment:
             """--- Quantify biotpyes with subread's featureCount."""
         log:
             path="results/quantify_biotypes/log/feature_counts_{sample}.log",
-        threads: int(workflow.cores * 0.4) if int(workflow.cores * 0.4) <= 64 else 64  # assign 40% of max cores
+        threads: min(max(1, int(workflow.cores * 0.2)), 64)  # assign 20% of max cores
         params:
             defaults=config["feature_counts"]["defaults"],
             libtype=config["libtype"],
@@ -102,3 +102,48 @@ if is_paired_end_experiment:
             "-p --countReadPairs "
             "-o {output.counts} "
             "{input.bam} &> {log.path}"
+
+
+# -----------------------------------------------------------
+# module to combine count tables and add feature information
+# -----------------------------------------------------------
+rule combine_count_tables:
+    input:
+        counts=expand("results/quantify_biotypes/{sample}.counts", sample=samples.index),
+        summary=expand(
+            "results/quantify_biotypes/{sample}.counts.summary", sample=samples.index
+        ),
+        gtf="results/extracted_features/biotypes.gtf",
+    output:
+        table="results/quantify_biotypes/all_samples_counts.tsv",
+    conda:
+        "../envs/quantify_biotypes.yml"
+    message:
+        """--- Combine count tables for all samples."""
+    log:
+        path="results/quantify_biotypes/log/merge_counts.log",
+    params:
+        samples=samples.index,
+    script:
+        "../scripts/merge_counts.py"
+
+
+# -----------------------------------------------------------
+# module to summarize biotype distributions
+# -----------------------------------------------------------
+rule summarize_biotypes:
+    input:
+        table="results/quantify_biotypes/all_samples_counts.tsv",
+    output:
+        tab_counts="results/quantify_biotypes/all_samples_biotype_counts.tsv",
+        tab_fractions="results/quantify_biotypes/all_samples_biotype_fraction.tsv",
+    conda:
+        "../envs/quantify_biotypes.yml"
+    message:
+        """--- Extract fraction of biotypes for all samples."""
+    log:
+        path="results/quantify_biotypes/log/summarize_biotypes.log",
+    params:
+        samples=samples.index,
+    script:
+        "../scripts/summarize_biotypes.py"

@@ -13,8 +13,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-            fetch-depth: 0
-
+          fetch-depth: 0
       - name: Formatting
         uses: super-linter/super-linter@v7
         env:
@@ -22,12 +21,13 @@ jobs:
           DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VALIDATE_SNAKEMAKE_SNAKEFMT: true
+          VALIDATE_YAML_PRETTIER: true
 
   Linting:
     runs-on: ubuntu-latest
     if: ${{ github.actor != 'github-actions[bot]' }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Lint workflow
         uses: snakemake/snakemake-github-action@v1.25.1
         with:
@@ -43,7 +43,6 @@ jobs:
       - Formatting
     steps:
       - uses: actions/checkout@v4
-
       - name: Test workflow
         uses: snakemake/snakemake-github-action@v1.25.1
         with:

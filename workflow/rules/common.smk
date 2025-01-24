@@ -296,6 +296,7 @@ def construct_multiqc_input():
             sample=samples.index,
         )
     )
+    inputs.append(["results/qc/biotypes/barplot_biotype_data_mqc.json"])
     return list(itertools.chain.from_iterable(inputs))
 
 

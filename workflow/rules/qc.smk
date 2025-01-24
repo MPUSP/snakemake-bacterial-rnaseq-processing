@@ -60,9 +60,9 @@ rule alignment_stats:
 
 
 # -----------------------------------------------------
-# module to qc quantified biotypes
+# module to qc quantified biotypes by featureCounts
 # -----------------------------------------------------
-rule qc_biotypes:
+rule qc_biotype_summary:
     input:
         "results/quantify_biotypes/{sample}.counts.summary",
     output:
@@ -75,6 +75,25 @@ rule qc_biotypes:
         """--- Copy biotype quantification summary."""
     shell:
         "cp {input} {output} &> {log}"
+
+
+# -----------------------------------------------------
+# module to plot biotype distribution
+# -----------------------------------------------------
+rule qc_biotype_barplot:
+    input:
+        table="results/quantify_biotypes/all_samples_biotype_counts.tsv",
+        gtf="results/extracted_features/biotypes.gtf",
+    output:
+        json="results/qc/biotypes/barplot_biotype_data_mqc.json",
+    conda:
+        "../envs/quantify_biotypes.yml"
+    log:
+        path="results/qc/biotypes/log/extract_biotype_data.log",
+    message:
+        """--- Generate multiqc barplot data for biotype distribution."""
+    script:
+        "../scripts/plot_biotypes.py"
 
 
 # -----------------------------------------------------

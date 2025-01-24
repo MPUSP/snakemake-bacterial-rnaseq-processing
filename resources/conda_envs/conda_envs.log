@@ -10,31 +10,12 @@ channels:
   - bioconda
 dependencies:
   - fastqc=0.12.1
-name: get_genome
-channels:
-  - conda-forge
-  - bioconda
-dependencies:
-  - unzip=6.0
-  - ncbi-datasets-cli=16.27.2
-  - bcbio-gff=0.7.1
-  - samtools=1.21
-  - htslib=1.21
 name: multiqc
 channels:
   - conda-forge
   - bioconda
 dependencies:
   - multiqc=1.24.1
-name: umitools
-channels:
-  - conda-forge
-  - bioconda
-dependencies:
-  - umi_tools=1.1.5
-  - samtools=1.21
-  - htslib=1.21
-  - dnaio=1.2.2
 name: extract_features
 channels:
   - conda-forge
@@ -62,6 +43,16 @@ channels:
   - bioconda
 dependencies:
   - subread=2.0.6
+name: get_genome
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - unzip=6.0
+  - ncbi-datasets-cli=16.27.2
+  - bcbio-gff=0.7.1
+  - samtools=1.21
+  - htslib=1.21
 name: samtools
 channels:
   - conda-forge
@@ -77,3 +68,19 @@ dependencies:
   - star=2.7.11b
   - samtools=1.21
   - htslib=1.21
+name: umitools
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - umi_tools=1.1.5
+  - samtools=1.21
+  - htslib=1.21
+  - dnaio=1.2.2
+name: quantify_biotypes
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - python=3.12.7
+  - pandas=2.2.3
