@@ -1,4 +1,3 @@
-import itertools
 import os
 import pandas as pd
 import yaml
@@ -97,40 +96,23 @@ def get_qc_input(wildcards):
     """Get QC input file."""
     inputs = []
     if wildcards.status == "raw":
-        inputs.append(
-            expand(
-                "{input_dir}/{sample}",
-                input_dir=samples.loc[wildcards.sample]["data_folder"],
-                sample=samples.loc[wildcards.sample]["fq1"],
-            )
-        )
+        inputs += [samples.loc[wildcards.sample]["fq1"]]
         if not is_single_end(wildcards.sample):
             # append R2 if sample is paired-end
-            inputs.append(
-                expand(
-                    "{input_dir}/{sample}",
-                    input_dir=samples.loc[wildcards.sample]["data_folder"],
-                    sample=samples.loc[wildcards.sample]["fq2"],
-                )
-            )
-
+            inputs += [samples.loc[wildcards.sample]["fq2"]]
     if wildcards.status == "clipped":
         if not is_single_end(wildcards.sample):
-            inputs.append(
-                expand(
-                    os.path.join("results", "clipped", "{sample}_{read}.fastq.gz"),
-                    sample=wildcards.sample,
-                    read=["R1", "R2"],
-                )
+            inputs += expand(
+                "results/umi_extract/{sample}_{read}.fastq.gz",
+                sample=wildcards.sample,
+                read=["R1", "R2"],
             )
         else:
-            inputs.append(
-                expand(
-                    os.path.join("results", "clipped", "{sample}.fastq.gz"),
-                    sample=wildcards.sample,
-                )
+            inputs += expand(
+                "results/clipped/{sample}.fastq.gz",
+                sample=wildcards.sample,
             )
-    return list(itertools.chain.from_iterable(inputs))
+    return inputs
 
 
 # get fastq files for umi extract input
@@ -138,32 +120,14 @@ def get_umi_input(wildcards):
     """Get FASTQ files UMI extraction."""
     inputs = []
     # three fastq files
-    inputs.append(
-        expand(
-            "{input_dir}/{sample}",
-            input_dir=samples.loc[wildcards.sample]["data_folder"],
-            sample=samples.loc[wildcards.sample]["fq1"],
-        )
-    )
+    inputs.append(samples.loc[wildcards.sample]["fq1"])
     if not is_single_end(wildcards.sample):
         # append R2 if sample is paired-end
-        inputs.append(
-            expand(
-                "{input_dir}/{sample}",
-                input_dir=samples.loc[wildcards.sample]["data_folder"],
-                sample=samples.loc[wildcards.sample]["fq2"],
-            )
-        )
+        inputs.append(samples.loc[wildcards.sample]["fq2"])
     # include third fastq file
     if is_rnaseq_neb_umi:
-        inputs.append(
-            expand(
-                "{input_dir}/{sample}",
-                input_dir=samples.loc[wildcards.sample]["data_folder"],
-                sample=samples.loc[wildcards.sample]["fq_umi"],
-            )
-        )
-    return list(itertools.chain.from_iterable(inputs))
+        inputs.append(samples.loc[wildcards.sample]["fq_umi"])
+    return inputs
 
 
 # returns fastq files for trimming
@@ -171,18 +135,14 @@ def get_trimming_input(wildcards):
     """Get FASTQ files for trimming."""
     inputs = []
     if is_single_end_experiment:
-        inputs.append(
-            expand("results/umi_extract/{sample}.fastq.gz", sample=wildcards.sample)
-        )
+        inputs += expand("results/umi_extract/{sample}.fastq.gz", sample=wildcards.sample)
     elif is_paired_end_experiment:
-        inputs.append(
-            expand(
-                "results/umi_extract/{sample}_{read}.fastq.gz",
-                sample=wildcards.sample,
-                read=["R1", "R2"],
-            )
+        inputs += expand(
+            "results/umi_extract/{sample}_{read}.fastq.gz",
+            sample=wildcards.sample,
+            read=["R1", "R2"],
         )
-    return list(itertools.chain.from_iterable(inputs))
+    return inputs
 
 
 # returns fastq files for truncation post trimming
@@ -190,16 +150,14 @@ def get_trunc_input(wildcards):
     """Get FASTQ files for trunction post trimming."""
     inputs = []
     if is_single_end_experiment:
-        inputs.append(expand("results/clipped/{sample}.fastq.gz", sample=wildcards.sample))
+        inputs += expand("results/clipped/{sample}.fastq.gz", sample=wildcards.sample)
     elif is_paired_end_experiment:
-        inputs.append(
-            expand(
-                "results/clipped/{sample}_{read}.fastq.gz",
-                sample=wildcards.sample,
-                read=["R1", "R2"],
-            )
+        inputs += expand(
+            "results/clipped/{sample}_{read}.fastq.gz",
+            sample=wildcards.sample,
+            read=["R1", "R2"],
         )
-    return list(itertools.chain.from_iterable(inputs))
+    return inputs
 
 
 # returns fastq files for mapping
@@ -207,28 +165,22 @@ def get_mapping_input(wildcards):
     """Get FASTQ files for trimming."""
     inputs = []
     if is_single_end_experiment and (is_rnaseq_mpusp_custom or is_rnaseq_neb_umi):
-        inputs.append(expand("results/clipped/{sample}.fastq.gz", sample=wildcards.sample))
+        inputs += expand("results/clipped/{sample}.fastq.gz", sample=wildcards.sample)
     elif is_single_end_experiment and is_rnaseq_nextflex:
-        inputs.append(
-            expand("results/trunc_fastq/{sample}.fastq.gz", sample=wildcards.sample)
-        )
+        inputs += expand("results/trunc_fastq/{sample}.fastq.gz", sample=wildcards.sample)
     elif is_paired_end_experiment and (is_rnaseq_mpusp_custom or is_rnaseq_neb_umi):
-        inputs.append(
-            expand(
-                "results/clipped/{sample}_{read}.fastq.gz",
-                sample=wildcards.sample,
-                read=["R1", "R2"],
-            )
+        inputs += expand(
+            "results/clipped/{sample}_{read}.fastq.gz",
+            sample=wildcards.sample,
+            read=["R1", "R2"],
         )
     elif is_paired_end_experiment and is_rnaseq_nextflex:
-        inputs.append(
-            expand(
-                "results/trunc_fastq/{sample}_{read}.fastq.gz",
-                sample=wildcards.sample,
-                read=["R1", "R2"],
-            )
+        inputs += expand(
+            "results/trunc_fastq/{sample}_{read}.fastq.gz",
+            sample=wildcards.sample,
+            read=["R1", "R2"],
         )
-    return list(itertools.chain.from_iterable(inputs))
+    return inputs
 
 
 # return bam files for alignment qc
@@ -264,40 +216,33 @@ def get_conda_envs_files():
     wf_dir = os.path.abspath(workflow.basedir)
     envs = []
     try:
-        envs.append(
-            expand(
-                os.path.join(wf_dir, "envs", "{envs}"), envs=os.listdir(f"{wf_dir}/envs")
-            )
+        envs += expand(
+            os.path.join(wf_dir, "envs", "{envs}"), envs=os.listdir(f"{wf_dir}/envs")
         )
     except FileNotFoundError:
-        envs.append([""])
-    return list(itertools.chain.from_iterable(envs))
+        msg = "No conda environments found in the 'envs' directory."
+        logger.error(msg)
+    return envs
 
 
 def construct_multiqc_input():
     inputs = []
-    inputs.append(
-        expand(
-            "results/qc/{status}_reads/{sample}",
-            status=["raw", "clipped"],
-            sample=samples.index,
-        ),
+    inputs += expand(
+        "results/qc/{status}_reads/{sample}",
+        status=["raw", "clipped"],
+        sample=samples.index,
     )
-    inputs.append(
-        expand(
-            "results/qc/{step}_alignment/{sample}.flagstat",
-            step=["mapped", "dedup"],
-            sample=samples.index,
-        )
+    inputs += expand(
+        "results/qc/{step}_alignment/{sample}.flagstat",
+        step=["mapped", "dedup"],
+        sample=samples.index,
     )
-    inputs.append(
-        expand(
-            "results/qc/biotypes/{sample}.counts.summary",
-            sample=samples.index,
-        )
+    inputs += expand(
+        "results/qc/biotypes/{sample}.counts.summary",
+        sample=samples.index,
     )
     inputs.append(["results/qc/biotypes/barplot_biotype_data_mqc.json"])
-    return list(itertools.chain.from_iterable(inputs))
+    return inputs
 
 
 def define_multiqc_dirs():
