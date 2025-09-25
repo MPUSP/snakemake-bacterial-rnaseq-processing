@@ -6,26 +6,24 @@
 [![run with conda](http://img.shields.io/badge/run%20with-conda-3EB049?labelColor=000000&logo=anaconda)](https://docs.conda.io/en/latest/)
 [![workflow catalog](https://img.shields.io/badge/Snakemake%20workflow%20catalog-darkgreen)](https://snakemake.github.io/snakemake-workflow-catalog)
 
-------------------------------------------------------------------------
+---
 
 A Snakemake workflow for the processing of short read rnaseq data in bacteria.
 
--   [Bacterial RNAseq processing](#anchortitle)
-    -   [Usage](#usage)
-    -   [Workflow overview](#workflow-overview)
-    -   [Installation](#installation)
-    -   [Running the workflow](#running-the-workflow)
-        -   [Input data](#input-data)
-            -   [Reference genome](#reference-genome)
-        -   [Execution](#execution)
-    -   [Authors](#authors)
-    -   [References](#references)
+- [Snakemake workflow: bacterial-rnaseq-processing](#snakemake-workflow-bacterial-rnaseq-processing)
+  - [Usage](#usage)
+  - [Workflow overview](#workflow-overview)
+  - [Deployment options](#deployment-options)
+  - [Authors](#authors)
+  - [References](#references)
 
 ## Usage
 
-The usage of this workflow is described in the [Snakemake Workflow Catalog](https://snakemake.github.io/snakemake-workflow-catalog/?usage=MPUSP%2Fsnakemake-bacterial-rnaseq-processing).
+The usage of this workflow is described in the [Snakemake Workflow Catalog](https://snakemake.github.io/snakemake-workflow-catalog/docs/workflows/MPUSP/snakemake-bacterial-rnaseq-processing).
 
-If you use this workflow in a paper, don't forget to give credits to the authors by citing the URL of this (original) <repo>sitory and its DOI (see above).
+Detailed information about input data and workflow configuration can also be found in the [`config/README.md`](config/README.md).
+
+If you use this workflow in a paper, don't forget to give credits to the authors by citing the URL of this repository or its DOI.
 
 ## Workflow overview
 
@@ -47,101 +45,48 @@ This workflow is a best-practice workflow for the processing of short read seque
 ---
 
 ![](resources/images/dag.png)
+
 <p>Figure 1: Directed acyclic graph (DAG) of the current workflow steps.</p>
 
-## Installation
-
-**Step 1: Clone this repository**
-
-``` bash
-git clone https://github.com/MPUSP/snakemake-bacterial-rnaseq-processing.git
-cd snakemake-bacterial-rnaseq-processing
-```
-
-**Step 2: Install dependencies**
-
-It is recommended to install snakemake and run the workflow with `conda` or `mamba`. [Miniforge](https://conda-forge.org/download/) is the preferred conda-forge installer and includes `conda`, `mamba` and their dependencies.
-
-**Step 3: Create snakemake environment**
-
-This step creates a new conda environment called `snakemake-bacterial-rnaseq-processing`.
-
-``` bash
-# create new environment with dependencies & activate it
-mamba create -c conda-forge -c bioconda -n snakemake-bacterial-rnaseq-processing snakemake pandas python=3.12
-conda activate snakemake-bacterial-rnaseq-processing
-```
-
-**Note:**
-
-All other dependencies for the workflow are **automatically pulled as `conda` environments** by snakemake, when running the workflow with the `--sdm-conda` parameter (recommended).
-
-**Step 4: Create all rule specific environments (optional)**
-
-This step creates all conda environments specified in the snakemake rules. This step is optional.
-
-``` bash
-# activate new environment
-conda activate snakemake-bacterial-rnaseq-processing
-snakemake -c 1 --sdm conda --conda-create-envs-only --conda-cleanup-pkgs cache
-```
-
-## Running the workflow
-
-### Input data
-
-#### Reference genome
-
-An NCBI Refseq ID, e.g. `GCF_000006785.2`. Find your genome assembly and corresponding ID on [NCBI genomes](https://www.ncbi.nlm.nih.gov/data-hub/genome/). Alternatively use a custom pair of `*.fasta` file and `*.gff` file that describe the genome of choice.
-
-Important requirements when using custom `*.fasta` and `*.gff` files:
-
--   `*.gff` genome annotation must have the same chromosome/region name as the `*.fasta` file (example: `NC_002737.2`)
--   `*.gff` genome annotation must have `gene` and `CDS` type annotation that is automatically parsed to extract transcripts
--   all chromosomes/regions in the `*.gff` genome annotation must be present in the `*.fasta` sequence
--   but not all sequences in the `*.fasta` file need to have annotated genes in the `*.gff` file
-
-#### Read data
-
-RNA sequencing data in `*.fastq.gz` format. The currently supported input data are **second generation reads**. Input data files are supplied via a mandatory table, whose location is indicated in the `config.yml` file (default: `samples.tsv`). The sample sheet has the following layout:
-
-| sample | condition | replicate | experiment | data_folder | fq1 | fq2 | fq_umi |
-|---------|---------|---------|---------|---------|---------|---------|---------|
-| RNA-1 | RNA | 1 | rnaseq_mpusp_custom | data | RNA-1_R1.fastq.gz | RNA-1_R2.fastq.gz | \- |
-| RNA-2 | RNA | 2 | rnaseq_mpusp_custom | data | RNA-2_R2.fastq.gz | RNA-2_R2.fastq.gz | \- |
-
-Some configuration parameters of the pipeline may be specific for your data and library preparation protocol. The options should be adjusted in the `config.yml` file.
-
-Currently, we support example configurations for three different sequencing protocols, *i.e.* `rnaseq_nextflex`, `rnaseq_neb_umi`and `rnseq_mpusp_custom`. These example protocols can be found in `resources/protocols/`.
-
-### Execution
+## Deployment options
 
 To run the workflow from command line, change the working directory.
 
-``` bash
-cd snakemake-bacterial-rnaseq-processing
+```bash
+cd path/to/snakemake-workflow-name
 ```
 
-To run the complete workflow with test files using **`conda`**, execute the following command. The definition of the number of compute cores is mandatory.
+Adjust options in the default config file `config/config.yml`.
+Before running the complete workflow, you can perform a dry run using:
 
-``` bash
-snakemake --cores 10 --sdm conda --directory .test
+```bash
+snakemake --dry-run
 ```
 
-To run the workflow with your own data, define the sample sheet as explained above and adjust options in the default config file `config/config.yml` according to your library preparation protocol. Before running the entire workflow, you can perform a dry run using:
+To run the workflow with test files using **conda**:
 
-``` bash
-snakemake -c 1 --sdm conda --dry-run
+```bash
+snakemake --cores 2 --sdm conda --directory .test
 ```
 
-## Author
+To run the workflow with **apptainer** / **singularity** (not yet supported):
 
--   Dr. Rina Ahmed-Begrich
-    -   Affiliation: [Max-Planck-Unit for the Science of Pathogens](https://www.mpusp.mpg.de/) (MPUSP), Berlin, Germany
-    -   ORCID profile: https://orcid.org/0000-0002-0656-1795
+```bash
+snakemake --cores 2 --sdm conda apptainer --directory .test
+```
+
+## Authors
+
+- Dr Rina Ahmed-Begrich
+  - Affiliation: [Max-Planck-Unit for the Science of Pathogens](https://www.mpusp.mpg.de/) (MPUSP), Berlin, Germany
+  - ORCID profile: https://orcid.org/0000-0002-0656-1795
+- Dr. Michael Jahn
+  - Affiliation: [Max-Planck-Unit for the Science of Pathogens](https://www.mpusp.mpg.de/) (MPUSP), Berlin, Germany
+  - ORCID profile: https://orcid.org/0000-0002-3913-153X
+  - github page: https://github.com/m-jahn
 
 Visit the MPUSP github page at https://github.com/MPUSP for more info on this workflow and other projects.
 
 ## References
 
--   Essential tools are linked in the top section of this document
+- Essential tools are linked in the top section of this document
