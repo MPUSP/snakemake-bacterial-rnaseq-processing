@@ -34,7 +34,7 @@ Important requirements when using custom `*.fasta` and `*.gff` files:
 
 RNA sequencing data in `*.fastq.gz` format. The currently supported input data are **second generation reads**. Input data files are supplied via a mandatory table, whose location is indicated in the `config.yml` file (default: `samples.tsv`). The sample sheet has the following layout:
 
-| sample | condition | replicate | experiment          | fq1               | fq2               | fq_umi |
+| sample | condition | replicate | experiment          | fq1               | fq2               | read1 |
 | ------ | --------- | --------- | ------------------- | ----------------- | ----------------- | ------ |
 | RNA-1  | RNA       | 1         | rnaseq_mpusp_custom | RNA-1_R1.fastq.gz | RNA-1_R2.fastq.gz | \-     |
 | RNA-2  | RNA       | 2         | rnaseq_mpusp_custom | RNA-2_R2.fastq.gz | RNA-2_R2.fastq.gz | \-     |

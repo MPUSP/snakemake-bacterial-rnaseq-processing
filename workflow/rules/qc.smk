@@ -1,85 +1,38 @@
-# -----------------------------------------------------
-# modules to make fastqc report
-# -----------------------------------------------------
-if is_single_end_experiment:
-
-    rule fastqc:
-        input:
-            fastq=get_qc_input,
-        output:
-            report=directory("results/qc/{status}_reads/{sample}"),
-        conda:
-            "../envs/fastqc.yml"
-        message:
-            """--- Checking fastq files with FastQC."""
-        log:
-            "results/qc/{status}_reads/log/{sample}.log",
-        threads: int(workflow.cores * 0.2)  # assign 20% of max cores
-        shell:
-            "mkdir -p {output.report}; "
-            "fastqc --nogroup --threads {threads} -o {output.report} -q {input.fastq} > {log}"
+rule fastqc:
+    input:
+        fastq="results/get_fastq/{sample}_{read}.fastq.gz",
+    output:
+        html="results/fastqc/{sample}_{read}_fastqc.html",
+        zip="results/fastqc/{sample}_{read}_fastqc.zip",
+    params:
+        extra=config["fastqc"]["extra"],
+    message:
+        "--- Checking fastq files with FastQC"
+    log:
+        "results/fastqc/{sample}.bwa.{read}.log",
+    threads: 1
+    resources:
+        mem_mb=4096,
+    wrapper:
+        "v6.0.0/bio/fastqc"
 
 
-if is_paired_end_experiment:
-
-    rule fastqc:
-        input:
-            fastqs=get_qc_input,
-        output:
-            report=directory("results/qc/{status}_reads/{sample}"),
-        conda:
-            "../envs/fastqc.yml"
-        message:
-            """--- Checking fastq files with FastQC."""
-        log:
-            "results/qc/{status}_reads/log/{sample}.log",
-        threads: int(workflow.cores * 0.2)  # assign 20% of max cores
-        shell:
-            "mkdir -p {output.report}; "
-            "fastqc --nogroup --threads {threads} -o {output.report} -q {input.fastqs[0]} > {log}; "
-            "fastqc --nogroup --threads {threads} -o {output.report} -q {input.fastqs[1]} &> {log}"
-
-
-# -----------------------------------------------------
-# module to determine alignment stats
-# -----------------------------------------------------
 rule alignment_stats:
     input:
-        stats=get_stats_input,
+        "results/{step}/{sample}.bam",
     output:
-        "results/qc/{step}_alignment/{sample}.flagstat",
+        "results/qc/{step}/{sample}.flagstat",
     conda:
         "../envs/samtools.yml"
     log:
-        "results/qc/{step}_alignment/log/samtools_{sample}.log",
+        "results/qc/{step}/{sample}_flagstat.log",
     message:
-        """--- Generate mapping statistics of BAM file using samtools."""
-    threads: int(workflow.cores * 0.2)  # assign 20% of max cores
+        "--- Generate mapping statistics of BAM file using samtools."
+    threads: int(workflow.cores * 0.2)
     shell:
-        "samtools flagstat -@ {threads} {input.stats} > {output} 2> {log}"
+        "samtools flagstat -@ {threads} {input} > {output} 2> {log}"
 
 
-# -----------------------------------------------------
-# module to qc quantified biotypes by featureCounts
-# -----------------------------------------------------
-rule qc_biotype_summary:
-    input:
-        "results/quantify_biotypes/{sample}.counts.summary",
-    output:
-        "results/qc/biotypes/{sample}.counts.summary",
-    conda:
-        "../envs/feature_counts.yml"
-    log:
-        "results/qc/biotypes/log/copy_{sample}.log",
-    message:
-        """--- Copy biotype quantification summary."""
-    shell:
-        "cp {input} {output} &> {log}"
-
-
-# -----------------------------------------------------
-# module to plot biotype distribution
-# -----------------------------------------------------
 rule qc_biotype_barplot:
     input:
         table="results/quantify_biotypes/all_samples_biotype_counts.tsv",
@@ -96,9 +49,6 @@ rule qc_biotype_barplot:
         "../scripts/plot_biotypes.py"
 
 
-# -----------------------------------------------------
-# module to extract software versions from conda envs
-# -----------------------------------------------------
 rule get_conda_envs:
     output:
         "results/versions/log_conda_envs.txt",
@@ -119,19 +69,16 @@ rule get_conda_envs:
         "fi;"
 
 
-# -----------------------------------------------------
-# module to generate software version yaml file MultiQC
-# -----------------------------------------------------
 rule get_software_yaml:
     input:
         conda_envs="results/versions/log_conda_envs.txt",
     output:
         yaml="results/versions/rnaseq_preprocessinq_mqc_versions.yml",
-        multi_conf="results/qc/multiqc/multiqc_config.yml",
+        multi_conf="results/multiqc/multiqc_config.yml",
     conda:
         "../envs/base.yml"
     message:
-        """--- Generate software version yaml file for MultiQC."""
+        "--- Generate software version yaml file for MultiQC."
     log:
         path="results/versions/log/yaml_versions.log",
     params:
@@ -140,31 +87,17 @@ rule get_software_yaml:
         "../scripts/get_versions.py"
 
 
-# -----------------------------------------------------
-# module to run multiQC on input + processed files
-# -----------------------------------------------------
 rule multiqc:
     input:
-        construct_multiqc_input(),
-        config="results/qc/multiqc/multiqc_config.yml",
+        get_multiqc_input,
+        config="results/multiqc/multiqc_config.yml",
     output:
-        report="results/qc/multiqc/multiqc_report.html",
-        final="results/report/multiqc_report.html",
-    conda:
-        "../envs/multiqc.yml"
-    message:
-        """--- Generating MultiQC report for seq data."""
-    log:
-        path="results/qc/multiqc/log/multiqc.log",
+        report="results/multiqc/multiqc_report.html",
     params:
-        defaults=config["multiqc"]["defaults"],
-        outdir=lambda w, output: os.path.split(output.report)[0],
-        filename=lambda w, output: os.path.split(output.report)[1],
-        qc_dirs=define_multiqc_dirs(),
-    shell:
-        "multiqc {params.defaults} "
-        "--config {input.config} "
-        "--outdir {params.outdir} "
-        "--filename {params.filename} "
-        "--dirs {params.qc_dirs} &> {log.path}; "
-        "cp {output.report} {output.final}"
+        extra=config["multiqc"]["extra"],
+    message:
+        "--- Generating MultiQC report for seq data"
+    log:
+        "results/multiqc/multiqc.log",
+    wrapper:
+        "v7.5.0/bio/multiqc"

@@ -42,7 +42,7 @@ include: "rules/trim.smk"
 include: "rules/dedup.smk"
 include: "rules/mapping.smk"
 include: "rules/quantification.smk"
-include: "rules/coverage_tracks.smk"
+include: "rules/coverage.smk"
 
 
 onstart:
