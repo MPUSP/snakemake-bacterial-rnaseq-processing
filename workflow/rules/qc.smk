@@ -22,15 +22,13 @@ rule alignment_stats:
         "results/{step}/{sample}.bam",
     output:
         "results/qc/{step}/{sample}.flagstat",
-    conda:
-        "../envs/samtools.yml"
     log:
         "results/qc/{step}/{sample}_flagstat.log",
     message:
         "--- Generate mapping statistics of BAM file using samtools."
     threads: int(workflow.cores * 0.2)
-    shell:
-        "samtools flagstat -@ {threads} {input} > {output} 2> {log}"
+    wrapper:
+        "v7.5.0/bio/samtools/flagstat"
 
 
 rule qc_biotype_barplot:
