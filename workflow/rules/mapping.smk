@@ -15,7 +15,7 @@ rule get_genome:
         gff="results/genome/genome.gff",
         fai="results/genome/genome.fasta.fai",
     message:
-        """--- Parsing genome GFF and FASTA files."""
+        "--- Parsing genome GFF and FASTA files."
     params:
         database=config["get_genome"]["database"],
         assembly=config["get_genome"]["assembly"],

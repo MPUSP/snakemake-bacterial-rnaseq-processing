@@ -40,13 +40,6 @@ def is_paired_end():
         raise ValueError(msg)
 
 
-# test presence of read1, read2, and umi_read
-def get_reads():
-    reads = ["read1", "read2"] if is_paired_end() else ["read1"]
-    reads += ["readumi"] if samples["readumi"].notna().all() else []
-    return reads
-
-
 # get fastq files
 def get_fastq(wildcards):
     file = Path(samples.loc[wildcards["sample"]][wildcards["read"]])
@@ -60,9 +53,10 @@ def get_fastq(wildcards):
 # get pairs of fastq files for fastp
 def get_fastq_pairs(wildcards):
     return expand(
-        "results/umi_extract/{sample}_{read}.fastq.gz",
+        "results/umi_extract{separate}/{sample}_{read}.fastq.gz",
+        separate="_separate" if samples["readumi"].notna().all() else "",
         sample=wildcards.sample,
-        read=get_reads(),
+        read=["read1", "read2"] if is_paired_end() else ["read1"],
     )
 
 

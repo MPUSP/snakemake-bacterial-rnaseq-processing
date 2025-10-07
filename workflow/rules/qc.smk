@@ -42,7 +42,7 @@ rule qc_biotype_barplot:
     log:
         path="results/qc/biotypes/log/extract_biotype_data.log",
     message:
-        """--- Generate multiqc barplot data for biotype distribution."""
+        "--- Generate multiqc barplot data for biotype distribution."
     script:
         "../scripts/plot_biotypes.py"
 
@@ -53,7 +53,7 @@ rule get_conda_envs:
     conda:
         "../envs/base.yml"
     message:
-        """--- Extract software version from conda envs."""
+        "--- Extract software version from conda envs."
     params:
         conda_files=" ".join(get_conda_envs_files()),
         conda_envs_log=workflow.source_path("../../resources/conda_envs/conda_envs.log"),

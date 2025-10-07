@@ -24,7 +24,7 @@ rule umi_extract_standard:
     conda:
         "../envs/umitools.yml"
     message:
-        "--- Extracting UMIs."
+        "--- Extracting UMIs from read."
     params:
         method=config["umi_extraction"]["method"],
         pattern=config["umi_extraction"]["pattern"],
@@ -48,19 +48,26 @@ rule umi_extract_standard:
         """
 
 
-# rule umi_extract_separate:
-#     input:
-#         "results/get_fastq/{sample}_{read}.fastq.gz",
-#     output:
-#         "results/umi_extract/{sample}_{read}.fastq.gz",
-#     conda:
-#         "../envs/umitools.yml"
-#     log:
-#         "results/umi_extract/log/{sample}_{read}.log",
-#     message:
-#         """--- Extracting UMIs."""
-#     script:
-#         "../scripts/extract_umis.py"
+rule umi_extract_separate:
+    input:
+        fq1="results/get_fastq/{sample}_read1.fastq.gz",
+        fq2="results/get_fastq/{sample}_read2.fastq.gz" if is_paired_end() else "",
+        fqumi="results/get_fastq/{sample}_readumi.fastq.gz",
+    output:
+        fq1="results/umi_extract_separate/{sample}_read1.fastq.gz",
+        fq2=(
+            "results/umi_extract_separate/{sample}_read2.fastq.gz"
+            if is_paired_end()
+            else ""
+        ),
+    conda:
+        "../envs/umitools.yml"
+    log:
+        "results/umi_extract_separate/log/{sample}.log",
+    message:
+        "--- Extracting UMIs from separate Fastq file."
+    script:
+        "../scripts/extract_umis.py"
 
 
 rule umi_dedup_pe:
@@ -73,7 +80,7 @@ rule umi_dedup_pe:
     conda:
         "../envs/umitools.yml"
     message:
-        """--- UMI tools deduplication."""
+        "--- UMI tools deduplication."
     params:
         tmp="results/deduplicated/sort_{sample}_tmp",
         default=config["umi_dedup"],

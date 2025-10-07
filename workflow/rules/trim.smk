@@ -6,7 +6,7 @@ rule fastp:
         json="results/fastp/{sample}.json",
         trimmed=expand(
             "results/fastp/{{sample}}_{read}.fastq.gz",
-            read=get_reads(),
+            read=["read1", "read2"] if is_paired_end() else ["read1"],
         ),
     log:
         "results/fastp/{sample}.log",

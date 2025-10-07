@@ -40,7 +40,7 @@ rule quantify_biotypes:
     conda:
         "../envs/feature_counts.yml"
     message:
-        """--- Quantify biotpyes with subread's featureCount."""
+        "--- Quantify biotpyes with subread's featureCount."
     log:
         path="results/qc/biotypes/{sample}.counts.log",
     threads: min(max(1, int(workflow.cores * 0.2)), 64)  # assign 20% of max cores
@@ -73,7 +73,7 @@ rule combine_count_tables:
     conda:
         "../envs/quantify_biotypes.yml"
     message:
-        """--- Combine count tables for all samples."""
+        "--- Combine count tables for all samples."
     log:
         path="results/quantify_biotypes/log/merge_counts.log",
     params:
@@ -91,7 +91,7 @@ rule summarize_biotypes:
     conda:
         "../envs/quantify_biotypes.yml"
     message:
-        """--- Extract fraction of biotypes for all samples."""
+        "--- Extract fraction of biotypes for all samples."
     log:
         path="results/quantify_biotypes/log/summarize_biotypes.log",
     params:
