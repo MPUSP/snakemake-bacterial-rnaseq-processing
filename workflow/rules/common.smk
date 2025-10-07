@@ -1,6 +1,6 @@
-import os
 import pandas as pd
 from snakemake.logging import logger
+from snakemake.utils import validate
 from pathlib import Path
 
 
@@ -21,6 +21,11 @@ samples = (
 wildcard_constraints:
     sample="|".join(samples.index),
     read="|".join(["read1", "read2", "readumi"]),
+
+
+# validate sample sheet and config file
+validate(samples, schema="../../config/schemas/samples.schema.yml")
+validate(config, schema="../../config/schemas/config.schema.yml")
 
 
 # helpers
@@ -76,12 +81,9 @@ def get_stats_input(wildcards):
 
 # returns path to conda envs files
 def get_conda_envs_files():
-    wf_dir = os.path.abspath(workflow.basedir)
-    envs = []
+    wf_dir = Path(workflow.basedir).absolute() / "envs"
     try:
-        envs += expand(
-            os.path.join(wf_dir, "envs", "{envs}"), envs=os.listdir(f"{wf_dir}/envs")
-        )
+        envs = [str(i) for i in wf_dir.iterdir()]
     except FileNotFoundError:
         msg = "No conda environments found in the 'envs' directory."
         logger.error(msg)
