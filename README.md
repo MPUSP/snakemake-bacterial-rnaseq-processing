@@ -33,7 +33,7 @@ This workflow is a best-practice workflow for the processing of short read seque
    1. Using automatic download from NCBI with a `RefSeq` ID
    2. Using user-supplied files
 2. Check quality of input sequencing data ([FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/))
-3. Cut adapters and filter by length and/or sequencing quality score ([Cutadapt](https://cutadapt.readthedocs.io/en/stable/))
+3. Cut adapters and filter by length and/or sequencing quality score ([fastp](https://github.com/OpenGene/fastp))
 4. Identify unique molecular identifier (UMI, [UMI-tools](https://umi-tools.readthedocs.io/en/latest/))
 5. Map reads to the reference genome ([STAR aligner](https://github.com/alexdobin/STAR))
 6. Sort and index aligned rnaseq data ([Samtools](http://www.htslib.org/))

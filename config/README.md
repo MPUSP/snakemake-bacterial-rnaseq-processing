@@ -6,7 +6,7 @@ This workflow is a best-practice workflow for the processing of short read seque
    1. Using automatic download from NCBI with a `RefSeq` ID
    2. Using user-supplied files
 2. Check quality of input sequencing data ([FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/))
-3. Cut adapters and filter by length and/or sequencing quality score ([Cutadapt](https://cutadapt.readthedocs.io/en/stable/))
+3. Cut adapters and filter by length and/or sequencing quality score ([fastp](https://github.com/OpenGene/fastp))
 4. Identify unique molecular identifier (UMI, [UMI-tools](https://umi-tools.readthedocs.io/en/latest/))
 5. Map reads to the reference genome ([STAR aligner](https://github.com/alexdobin/STAR))
 6. Sort and index aligned rnaseq data ([Samtools](http://www.htslib.org/))
@@ -34,26 +34,24 @@ Important requirements when using custom `*.fasta` and `*.gff` files:
 
 RNA sequencing data in `*.fastq.gz` format. The currently supported input data are **second generation reads**. Input data files are supplied via a mandatory table, whose location is indicated in the `config.yml` file (default: `samples.tsv`). The sample sheet has the following layout:
 
-| sample | condition | replicate | experiment          | fq1               | fq2               | read1 |
-| ------ | --------- | --------- | ------------------- | ----------------- | ----------------- | ------ |
-| RNA-1  | RNA       | 1         | rnaseq_mpusp_custom | RNA-1_R1.fastq.gz | RNA-1_R2.fastq.gz | \-     |
-| RNA-2  | RNA       | 2         | rnaseq_mpusp_custom | RNA-2_R2.fastq.gz | RNA-2_R2.fastq.gz | \-     |
+| sample | condition | replicate | read1             | read2             | readumi |
+| ------ | --------- | --------- | ----------------- | ----------------- | ------- |
+| RNA-1  | RNA       | 1         | RNA-1_R1.fastq.gz | RNA-1_R2.fastq.gz | \-      |
+| RNA-2  | RNA       | 2         | RNA-2_R2.fastq.gz | RNA-2_R2.fastq.gz | \-      |
 
 Some configuration parameters of the pipeline may be specific for your data and library preparation protocol. The options should be adjusted in the `config.yml` file.
 
-Currently, we support example configurations for three different sequencing protocols, _i.e._ `rnaseq_nextflex`, `rnaseq_neb_umi`and `rnseq_mpusp_custom`. These example protocols can be found in `resources/protocols/`.
+Configuration files for different sequencing protocols can be found in `resources/protocols/`.
+Currently, you may find protocols for _i.e._ `rnaseq_nextflex`, `rnaseq_neb_umi` and a custom protocol `rnaseq_mpusp_custom`.
 
 ### Output
 
-### Output
-
-| Output File/Folder           | Description                                                              |
-| ---------------------------- | ------------------------------------------------------------------------ |
-| `results/clipped/`           | Adapter-trimmed and quality-filtered FASTQ files.                        |
-| `results/deduplicated/`      | UMI-processed FASTQ/BAM files and UMI statistics.                        |
-| `results/genome/`            | Downloaded or user-supplied reference genome and annotation files.       |
-| `results/mapped/`            | Aligned reads in BAM format (sorted and indexed).                        |
-| `results/qc/`                | Quality control reports for raw and processed reads (FastQC HTML files). |
-| `results/deeptools/`         | CPM-normalized coverage files (bigWig format).                           |
-| `results/quantify_biotypes/` | Gene/feature count tables (tab-delimited text files).                    |
-| `results/report/`            | MultiQC report aggregating QC metrics from all steps.                    |
+| Output File/Folder           | Description                                                                  |
+| ---------------------------- | ---------------------------------------------------------------------------- |
+| `results/genome/`            | Downloaded or user-supplied reference genome and annotation files.           |
+| `results/fastp/`             | Adapter-trimmed and quality-filtered FASTQ files.                            |
+| `results/mapped/`            | Aligned reads in BAM format, coverage in BigWig format                       |
+| `results/deduplicated/`      | Aligned and UMI-deduplicated reads in BAM format, coverage in BigWig format. |
+| `results/qc/`                | Quality control reports for raw and processed reads (FastQC HTML files).     |
+| `results/quantify_biotypes/` | Gene/feature count tables (tab-delimited text files).                        |
+| `results/multiqc/`           | MultiQC report aggregating QC metrics from all steps.                        |

@@ -1,31 +1,12 @@
-# ----------------------------------------------------- #
-# A Snakemake workflow for the preprocessing of short   #
-# read RNAseq data in bacteria.                         #
-#                                                       #
-# Authors: Rina Ahmed-Begrich                           #
-# Date: 2025-01-02                                      #
-# License: MIT                                          #
-# ----------------------------------------------------- #
 import os
 
-
-__author__ = "Rina Ahmed-Begrich"
-__year__ = "2025"
-
-bold = "\033[1m"
-green = "\033[92m"
-cyan = "\033[36m"
-end = "\033[0m"
-
-msg = f"""{cyan}Bacterial-rnaseq-preprocessing: A Snakemake workflow
-for the preprocessing of short read RNAseq data in bacteria.{end}
-
-"""
-
-epilog = f"""{cyan}Written by {__author__},
-Max Planck Unit for the Science of Pathogens. Copyright (c) {__year__}.
-Copyright Holder All Rights Reserved.{end}
-
+epilog = """
+\033[36m
+Bacterial-rnaseq-preprocessing: A Snakemake workflow
+for the preprocessing of short read RNAseq data in bacteria.
+---
+Max Planck Unit for the Science of Pathogens. Copyright (c) 2025.
+\033[0m
 """
 
 
@@ -37,45 +18,27 @@ configfile: "config/config.yml"
 # load rules
 # -----------------------------------------------------
 include: "rules/common.smk"
-include: "rules/qc.smk"
-include: "rules/trim.smk"
+include: "rules/coverage.smk"
 include: "rules/dedup.smk"
 include: "rules/mapping.smk"
+include: "rules/qc.smk"
 include: "rules/quantification.smk"
-include: "rules/coverage.smk"
+include: "rules/trim.smk"
 
 
 onstart:
-    print("\n--- Analysis started...\n")
-    print()
-    print("--- Analysis parameters --------------------------------------------\n")
-    print(f"Current working directory: {os.getcwd()}")
-    print(f"Output directory: {os.path.join(os.getcwd(), 'results')}")
-    print()
-    print(f"RNAseq samples: {list(samples.index)}")
-    print()
+    print("\n--- Analysis started ---\n")
+    print(f"RNAseq samples: {list(samples.index)}\n\n")
 
 
 onsuccess:
-    print()
-    print(msg)
+    print("\n--- Workflow finished successfully! ---\n")
     print(epilog)
-    print("--- Workflow finished, no error! -----------------------------------")
-    print()
-    debug = os.path.join(os.getcwd(), "results/workflow.log")
-    shell(
-        "cat {log} > {debug} && echo -e '\nWorkflow finished, no error!\n' >> {debug}"
-    )
 
 
 onerror:
-    print()
-    print(msg)
+    print("\n--- An error occurred, see the snakemake log ---\n")
     print(epilog)
-    print("--- An error occurred! ---------------------------------------------")
-    print()
-    error = os.path.join(os.getcwd(), "results/error.log")
-    shell("cat {log} > {error} && echo -e '\nAn error occurred!' >> {error}")
 
 
 # target rules
