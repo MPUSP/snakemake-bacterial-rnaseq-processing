@@ -91,6 +91,10 @@ def get_conda_envs_files():
 def get_multiqc_input(wildcards):
     inputs = []
     inputs += expand(
+        "results/fastp/{sample}.json",
+        sample=samples.index,
+    )
+    inputs += expand(
         "results/fastqc/{sample}_{read}_fastqc.{ext}",
         sample=samples.index,
         read=["read1", "read2"] if is_paired_end() else ["read1"],

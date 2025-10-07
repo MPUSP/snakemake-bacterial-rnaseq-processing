@@ -24,21 +24,10 @@ remove_sections:
   - samtools-stats
 
 module_order:
+  - fastqc
+  - fastp
   - star
-  - cutadapt
-  - fastqc:
-      name: "FastQC (trimmed)"
-      anchor: "fastqc_trimmed"
-      info: "This section of the report shows FastQC results after adapter trimming."
-      target: ""
-      path_filters:
-        - "*/clipped_reads/*_fastqc.zip"
-  - fastqc:
-      name: "FastQC (raw)"
-      anchor: "fastqc_raw"
-      path_filters:
-        - "*/raw_reads/*_fastqc.zip"
-
-report_section_order:
-  fastqc_raw:
-    before: fastqc_trimmed
+  - umitools
+  - featurecounts
+  - samtools
+  - biotype_dist
