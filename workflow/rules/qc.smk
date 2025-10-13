@@ -10,7 +10,7 @@ rule fastqc:
         "--- Checking fastq files with FastQC"
     log:
         "results/fastqc/{sample}.bwa.{read}.log",
-    threads: 1
+    threads: 2
     resources:
         mem_mb=4096,
     wrapper:
@@ -26,7 +26,7 @@ rule alignment_stats:
         "results/qc/{step}/{sample}_flagstat.log",
     message:
         "--- Generate mapping statistics of BAM file using samtools."
-    threads: int(workflow.cores * 0.2)
+    threads: int(workflow.cores * 0.25)
     wrapper:
         "v7.5.0/bio/samtools/flagstat"
 

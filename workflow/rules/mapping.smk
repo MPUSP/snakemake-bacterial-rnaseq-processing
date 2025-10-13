@@ -56,7 +56,7 @@ rule star_mapping:
         "--- STAR mapping."
     params:
         extra=config["star"]["extra"],
-    threads: int(workflow.cores * 0.2)
+    threads: int(workflow.cores * 0.25)
     wrapper:
         "v7.2.0/bio/star/align"
 

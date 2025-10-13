@@ -10,7 +10,7 @@ rule deeptools_coverage:
         bai="results/{step}/{sample}.bam.bai",
     output:
         bw="results/{step}/{sample}_cpm_{strand}.bw",
-    threads: int(workflow.cores * 0.2)
+    threads: int(workflow.cores * 0.25)
     params:
         effective_genome_size=config["deeptools"]["genome_size"],
         extra=lambda wc: (

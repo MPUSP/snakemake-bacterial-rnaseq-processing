@@ -43,7 +43,7 @@ rule quantify_biotypes:
         "--- Quantify biotpyes with subread's featureCount."
     log:
         path="results/qc/biotypes/{sample}.counts.log",
-    threads: min(max(1, int(workflow.cores * 0.2)), 64)  # assign 20% of max cores
+    threads: int(workflow.cores * 0.25)
     params:
         defaults=config["feature_counts"]["defaults"],
         libtype=config["libtype"],

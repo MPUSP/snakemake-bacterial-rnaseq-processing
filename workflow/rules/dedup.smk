@@ -88,7 +88,7 @@ rule umi_dedup_pe:
         path="results/deduplicated/log/{sample}.log",
         stderr="results/deduplicated/log/{sample}.stderr",
         stats="results/deduplicated/log/{sample}_umi_stats.txt",
-    threads: int(workflow.cores * 0.2)  # assign 25% of max cores.
+    threads: int(workflow.cores * 0.25)
     shell:
         "umi_tools dedup "
         "--paired "
