@@ -27,7 +27,7 @@ properties:
     properties:
       method:
         type: string
-        enum: ["regex", "string"]
+        enum: ["regex", "string", "none"]
       pattern:
         type: string
   umi_dedup:

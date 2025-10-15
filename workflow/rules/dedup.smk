@@ -17,10 +17,10 @@ rule get_fastq:
 rule umi_extract_standard:
     input:
         fq1="results/get_fastq/{sample}_read1.fastq.gz",
-        fq2="results/get_fastq/{sample}_read2.fastq.gz" if is_paired_end() else "",
+        fq2="results/get_fastq/{sample}_read2.fastq.gz" if is_paired_end() else [],
     output:
         fq1="results/umi_extract/{sample}_read1.fastq.gz",
-        fq2="results/umi_extract/{sample}_read2.fastq.gz" if is_paired_end() else "",
+        fq2="results/umi_extract/{sample}_read2.fastq.gz" if is_paired_end() else [],
     conda:
         "../envs/umitools.yml"
     message:
@@ -38,27 +38,34 @@ rule umi_extract_standard:
         error="results/umi_extract/log/{sample}.err",
     shell:
         """
-        umi_tools extract \
-        --extract-method {params.method} \
-        {params.pattern} \
-        --stdin {input.fq1} \
-        --stdout {output.fq1} \
-        {params.read2} \
-        --log {log.path} 2> {log.error}
+        if [[ "{params.method}" != "none" ]]; then
+            umi_tools extract \
+            --extract-method {params.method} \
+            {params.pattern} \
+            --stdin {input.fq1} \
+            --stdout {output.fq1} \
+            {params.read2} \
+            --log {log.path} 2> {log.error}
+        else
+            cp {input.fq1} {output.fq1}
+            if [[ -n "{params.read2}" ]]; then
+                cp {input.fq2} {output.fq2}
+            fi
+        fi
         """
 
 
 rule umi_extract_separate:
     input:
         fq1="results/get_fastq/{sample}_read1.fastq.gz",
-        fq2="results/get_fastq/{sample}_read2.fastq.gz" if is_paired_end() else "",
+        fq2="results/get_fastq/{sample}_read2.fastq.gz" if is_paired_end() else [],
         fqumi="results/get_fastq/{sample}_readumi.fastq.gz",
     output:
         fq1="results/umi_extract_separate/{sample}_read1.fastq.gz",
         fq2=(
             "results/umi_extract_separate/{sample}_read2.fastq.gz"
             if is_paired_end()
-            else ""
+            else []
         ),
     conda:
         "../envs/umitools.yml"
@@ -70,7 +77,7 @@ rule umi_extract_separate:
         "../scripts/extract_umis.py"
 
 
-rule umi_dedup_pe:
+rule umi_dedup:
     input:
         bam="results/mapped/{sample}.bam",
         bai="results/mapped/{sample}.bam.bai",
@@ -82,7 +89,9 @@ rule umi_dedup_pe:
     message:
         "--- UMI tools deduplication."
     params:
+        method=config["umi_extraction"]["method"],
         tmp="results/deduplicated/sort_{sample}_tmp",
+        paired="--paired " if is_paired_end() else "",
         default=config["umi_dedup"],
     log:
         path="results/deduplicated/log/{sample}.log",
@@ -90,11 +99,18 @@ rule umi_dedup_pe:
         stats="results/deduplicated/log/{sample}_umi_stats.txt",
     threads: int(workflow.cores * 0.25)
     shell:
-        "umi_tools dedup "
-        "--paired "
-        "{params.default} "
-        "--stdin={input.bam} "
-        "--output-stats={log.stats} "
-        "--log={log.path} 2> {log.stderr} | "
-        "samtools sort -@ {threads} -O bam -T {params.tmp} -o {output.bam}; "
-        "samtools index {output.bam}"
+        """
+        if [[ "{params.method}" != "none" ]]; then
+            umi_tools dedup \
+            {params.paired} \
+            {params.default} \
+            --stdin={input.bam} \
+            --output-stats={log.stats} \
+            --log={log.path} 2> {log.stderr} |
+            samtools sort -@ {threads} -O bam -T {params.tmp} -o {output.bam};
+            samtools index {output.bam};
+        else
+            samtools sort -@ {threads} -O bam -T {params.tmp} -o {output.bam} {input.bam};
+            samtools index {output.bam};
+        fi
+        """

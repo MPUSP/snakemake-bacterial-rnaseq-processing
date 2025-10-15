@@ -47,18 +47,22 @@ rule quantify_biotypes:
     params:
         defaults=config["feature_counts"]["defaults"],
         libtype=config["libtype"],
+        paired="-p --countReadPairs" if is_paired_end() else "",
     shell:
-        "if [ {params.libtype} == 'sense' ]; then "
-        "libtype=`echo -e '-s 1'`; "
-        "else libtype=`echo -e '-s 2'`; "
-        "fi; "
-        "featureCounts -T {threads} "
-        "{params.defaults} "
-        "${{libtype}} "
-        "-a {input.gtf} "
-        "-p --countReadPairs "
-        "-o {output.counts} "
-        "{input.bam} &> {log.path}"
+        """
+        if [ {params.libtype} == 'sense' ]; then
+            libtype=`echo -e '-s 1'`;
+        else
+            libtype=`echo -e '-s 2'`;
+        fi;
+        featureCounts -T {threads} \
+        {params.defaults} \
+        ${{libtype}} \
+        -a {input.gtf} \
+        {params.paired} \
+        -o {output.counts} \
+        {input.bam} &> {log.path}
+        """
 
 
 rule combine_count_tables:

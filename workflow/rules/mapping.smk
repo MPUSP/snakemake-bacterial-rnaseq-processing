@@ -45,7 +45,7 @@ rule star_index:
 rule star_mapping:
     input:
         fq1="results/fastp/{sample}_read1.fastq.gz",
-        fq2="results/fastp/{sample}_read2.fastq.gz" if is_paired_end() else "",
+        fq2="results/fastp/{sample}_read2.fastq.gz" if is_paired_end() else [],
         idx=rules.star_index.output,
     output:
         aln="results/mapped/unsorted/{sample}/mapped.bam",
