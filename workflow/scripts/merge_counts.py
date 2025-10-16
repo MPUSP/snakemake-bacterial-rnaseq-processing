@@ -45,23 +45,18 @@ try:
     ]
     biotypes = pd.read_table(gtf, names=gtf_cols, comment="#")
 
-    bio_type = (
-        pd.DataFrame(biotypes.attributes.apply(lambda x: x.split(";")).to_list())
-        .loc[:, 2]
-        .apply(lambda x: x.lstrip().split(" ")[1].replace('"', ""))
-    )
+    def parse_attrs(s):
+        pairs = [p.strip() for p in s.split(';') if p.strip()]
+        d = {}
+        for p in pairs:
+            k, v = p.split(' ', 1)
+            d[k] = v.strip().strip('"')
+        return d
 
-    locus_tag = (
-        pd.DataFrame(biotypes.attributes.apply(lambda x: x.split(";")).to_list())
-        .loc[:, 3]
-        .apply(lambda x: x.lstrip().split(" ")[1].replace('"', ""))
-    )
-
-    name = (
-        pd.DataFrame(biotypes.attributes.apply(lambda x: x.split(";")).to_list())
-        .loc[:, 4]
-        .apply(lambda x: x.lstrip().split(" ")[1].replace('"', ""))
-    )
+    attrs = biotypes.attributes.apply(parse_attrs)
+    bio_type = attrs.map(lambda d: d.get("gene_biotype") or d.get("biotype"))
+    locus_tag = attrs.map(lambda d: d.get("locus_tag"))
+    name = attrs.map(lambda d: d.get("Name") or d.get("gene_name"))
 
     meta_info = pd.concat([locus_tag, name, bio_type], axis=1, sort=False)
     meta_info.columns = ["locus_tag", "gene_name", "biotype"]

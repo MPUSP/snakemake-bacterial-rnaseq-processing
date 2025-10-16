@@ -8,6 +8,7 @@ rule extract_features:
     message:
         "--- Extract selected biotype features from genome annotation."
     params:
+        gff_source_types=config["get_genome"]["gff_source_type"],
         features=config["extract_features"]["biotypes"],
     log:
         path="results/extracted_features/log/extract_features.log",
@@ -65,7 +66,7 @@ rule quantify_biotypes:
         """
 
 
-rule combine_count_tables:
+rule merge_counts:
     input:
         counts=expand("results/qc/biotypes/{sample}.counts", sample=samples.index),
         summary=expand(
