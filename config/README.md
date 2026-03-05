@@ -44,6 +44,14 @@ Some configuration parameters of the pipeline may be specific for your data and 
 Configuration files for different sequencing protocols can be found in `resources/protocols/`.
 Currently, you may find protocols for _i.e._ `rnaseq_nextflex`, `rnaseq_neb_umi` and a custom protocol `rnaseq_mpusp_custom`.
 
+To run the workflow with the respective test data for the different protocols, use the following commands:
+
+```bash
+snakemake --sdm conda --cores 12 --directory .test --configfile resources/protocols/rnaseq_mpusp_custom.yml
+snakemake --sdm conda --cores 12 --directory .test --configfile resources/protocols/rnaseq_neb_umi.yml
+snakemake --sdm conda --cores 12 --directory .test --configfile resources/protocols/rnaseq_nextflex.yml
+```
+
 ### Output
 
 | Output File/Folder           | Description                                                                  |

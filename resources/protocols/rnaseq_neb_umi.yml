@@ -18,7 +18,7 @@ extract_features:
   biotypes: ["protein_coding", "pseudogene", "ncRNA", "rRNA", "tRNA"]
 
 umi_extraction:
-  method: ""
+  method: "none"
   pattern: ""
 umi_dedup: "--edit-distance-threshold=0"
 

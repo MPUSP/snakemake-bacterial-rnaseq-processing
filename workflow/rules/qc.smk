@@ -71,7 +71,7 @@ rule get_software_yaml:
     input:
         conda_envs="results/versions/log_conda_envs.txt",
     output:
-        yaml="results/versions/rnaseq_preprocessinq_mqc_versions.yml",
+        yaml="results/versions/rnaseq_preprocessing_mqc_versions.yml",
         multi_conf="results/multiqc/multiqc_config.yml",
     conda:
         "../envs/base.yml"
