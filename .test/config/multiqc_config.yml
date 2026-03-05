@@ -16,7 +16,7 @@ custom_logo_url: "https://www.mpusp.mpg.de/"
 custom_logo_title: "Max Planck Unit for the Science of Pathogens"
 
 skip_versions_section: false
-disable_version_detection: true
+disable_version_detection: false
 versions_table_group_header: "Workflow Analysis Steps"
 
 skip_generalstats: true

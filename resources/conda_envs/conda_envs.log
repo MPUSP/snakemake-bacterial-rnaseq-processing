@@ -1,21 +1,12 @@
-name: cutadapt
+name: umitools
 channels:
   - conda-forge
   - bioconda
 dependencies:
-  - cutadapt=4.9
-name: fastqc
-channels:
-  - conda-forge
-  - bioconda
-dependencies:
-  - fastqc=0.12.1
-name: multiqc
-channels:
-  - conda-forge
-  - bioconda
-dependencies:
-  - multiqc=1.24.1
+  - umi_tools=1.1.6
+  - samtools=1.23
+  - htslib=1.23
+  - dnaio=1.2.2
 name: extract_features
 channels:
   - conda-forge
@@ -27,60 +18,17 @@ channels:
   - conda-forge
   - bioconda
 dependencies:
-  - python=3.12.7
-  - pandas=2.2.3
-  - pyyaml=6.0.2
-  - snakemake=8.25.5
-name: deeptools
-channels:
-  - conda-forge
-  - bioconda
-dependencies:
-  - deeptools=3.5.5
+  - pyyaml=6.0.3
 name: feature_counts
 channels:
   - conda-forge
   - bioconda
 dependencies:
   - subread=2.0.6
-name: get_genome
-channels:
-  - conda-forge
-  - bioconda
-dependencies:
-  - unzip=6.0
-  - ncbi-datasets-cli=16.27.2
-  - bcbio-gff=0.7.1
-  - samtools=1.21
-  - htslib=1.21
-name: samtools
-channels:
-  - conda-forge
-  - bioconda
-dependencies:
-  - samtools=1.21
-  - htslib=1.21
-name: star
-channels:
-  - conda-forge
-  - bioconda
-dependencies:
-  - star=2.7.11b
-  - samtools=1.21
-  - htslib=1.21
-name: umitools
-channels:
-  - conda-forge
-  - bioconda
-dependencies:
-  - umi_tools=1.1.5
-  - samtools=1.21
-  - htslib=1.21
-  - dnaio=1.2.2
 name: quantify_biotypes
 channels:
   - conda-forge
   - bioconda
 dependencies:
-  - python=3.12.7
-  - pandas=2.2.3
+  - python=3.13.12
+  - pandas=2.3.2
