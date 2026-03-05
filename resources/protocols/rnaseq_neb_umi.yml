@@ -29,9 +29,10 @@ star:
   index: "--genomeSAindexNbases 9"
   extra:
     [
-      "--outFilterMultimapNmax 10 ",
+      "--outFilterMultimapNmax 10",
       "--outSAMmultNmax 1",
-      "--outMultimapperOrder Random ",
+      "--outMultimapperOrder Random",
+      "--alignIntronMax 1",
     ]
 
 samtools:

@@ -18,7 +18,7 @@ extract_features:
   biotypes: ["protein_coding", "pseudogene", "ncRNA", "rRNA", "tRNA"]
 
 umi_extraction:
-  method: ""
+  method: "none"
   pattern: ""
 umi_dedup: "--edit-distance-threshold=0"
 
@@ -29,9 +29,10 @@ star:
   index: "--genomeSAindexNbases 9"
   extra:
     [
-      "--outFilterMultimapNmax 10 ",
+      "--outFilterMultimapNmax 10",
       "--outSAMmultNmax 1",
-      "--outMultimapperOrder Random ",
+      "--outMultimapperOrder Random",
+      "--alignIntronMax 1",
     ]
 
 samtools:
