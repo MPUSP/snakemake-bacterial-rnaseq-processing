@@ -56,7 +56,7 @@ rule star_mapping:
         "--- STAR mapping."
     params:
         extra=config["star"]["extra"],
-    threads: int(workflow.cores * 0.25)
+    threads: max(1, int(workflow.cores * 0.25))
     wrapper:
         "v7.2.0/bio/star/align"
 
@@ -72,7 +72,7 @@ rule samtools_sort:
         "--- Sort reads after mapping."
     params:
         extra=config["samtools"]["sort"],
-    threads: 2
+    threads: max(1, int(workflow.cores * 0.25))
     wrapper:
         "v7.0.0/bio/samtools/sort"
 
@@ -88,6 +88,6 @@ rule samtools_index:
         "--- Index reads."
     params:
         extra=config["samtools"]["index"],
-    threads: 2
+    threads: max(1, int(workflow.cores * 0.25))
     wrapper:
         "v7.0.0/bio/samtools/index"

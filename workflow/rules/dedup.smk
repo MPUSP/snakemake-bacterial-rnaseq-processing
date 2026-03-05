@@ -97,7 +97,7 @@ rule umi_dedup:
         path="results/deduplicated/log/{sample}.log",
         stderr="results/deduplicated/log/{sample}.stderr",
         stats="results/deduplicated/log/{sample}_umi_stats.txt",
-    threads: int(workflow.cores * 0.25)
+    threads: max(1, int(workflow.cores * 0.25))
     shell:
         """
         if [[ "{params.method}" != "none" ]]; then
