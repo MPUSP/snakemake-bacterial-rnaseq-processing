@@ -1,10 +1,10 @@
 # <a id="anchortitle" />Snakemake workflow: bacterial-rnaseq-processing
 
-![Platform](https://img.shields.io/badge/platform-all-green)
 [![Snakemake](https://img.shields.io/badge/snakemake-≥8.0.0-brightgreen.svg)](https://snakemake.github.io)
-[![Tests](https://github.com/MPUSP/snakemake-bacterial-rnaseq-processing/actions/workflows/main.yml/badge.svg)](https://github.com/MPUSP/snakemake-bacterial-rnaseq-processing/actions/workflows/main.yml)
+[![GitHub actions](https://github.com/MPUSP/snakemake-bacterial-rnaseq-processing/actions/workflows/snakemake-tests.yml/badge.svg)](https://github.com/MPUSP/snakemake-bacterial-rnaseq-processing/workflows/snakemake-tests.yml)
 [![run with conda](http://img.shields.io/badge/run%20with-conda-3EB049?labelColor=000000&logo=anaconda)](https://docs.conda.io/en/latest/)
-[![workflow catalog](https://img.shields.io/badge/Snakemake%20workflow%20catalog-darkgreen)](https://snakemake.github.io/snakemake-workflow-catalog)
+[![run with apptainer](https://img.shields.io/badge/run_with-apptainer-darkblue)](https://apptainer.org/docs/user/latest/)
+[![workflow catalog](https://img.shields.io/badge/Snakemake%20workflow%20catalog-darkgreen)](https://snakemake.github.io/snakemake-workflow-catalog/docs/workflows/MPUSP/snakemake-bacterial-rnaseq-processing.html)
 
 ---
 
@@ -69,7 +69,7 @@ To run the workflow with test files using **conda**:
 snakemake --cores 2 --sdm conda --directory .test
 ```
 
-To run the workflow with **apptainer** / **singularity** (not yet supported):
+To run the workflow with **apptainer**:
 
 ```bash
 snakemake --cores 2 --sdm conda apptainer --directory .test
@@ -80,6 +80,7 @@ snakemake --cores 2 --sdm conda apptainer --directory .test
 - Dr Rina Ahmed-Begrich
   - Affiliation: [Max-Planck-Unit for the Science of Pathogens](https://www.mpusp.mpg.de/) (MPUSP), Berlin, Germany
   - ORCID profile: https://orcid.org/0000-0002-0656-1795
+  - github page: https://github.com/rabioinf
 - Dr. Michael Jahn
   - Affiliation: [Max-Planck-Unit for the Science of Pathogens](https://www.mpusp.mpg.de/) (MPUSP), Berlin, Germany
   - ORCID profile: https://orcid.org/0000-0002-3913-153X
