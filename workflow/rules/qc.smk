@@ -9,7 +9,7 @@ rule fastqc:
     message:
         "--- Checking fastq files with FastQC"
     log:
-        "results/fastqc/{sample}.bwa.{read}.log",
+        "results/fastqc/log/{sample}_{read}.log",
     threads: max(1, int(workflow.cores * 0.25))
     resources:
         mem_mb=4096,
@@ -23,7 +23,7 @@ rule alignment_stats:
     output:
         "results/qc/{step}/{sample}.flagstat",
     log:
-        "results/qc/{step}/{sample}_flagstat.log",
+        "results/qc/{step}/log/{sample}_flagstat.log",
     message:
         "--- Generate mapping statistics of BAM file using samtools."
     threads: max(1, int(workflow.cores * 0.25))
@@ -96,6 +96,6 @@ rule multiqc:
     message:
         "--- Generating MultiQC report for seq data"
     log:
-        "results/multiqc/multiqc.log",
+        "results/multiqc/log/multiqc.log",
     wrapper:
         "v7.5.0/bio/multiqc"

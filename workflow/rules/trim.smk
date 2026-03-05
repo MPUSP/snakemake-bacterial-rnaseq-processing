@@ -9,7 +9,7 @@ rule fastp:
             read=["read1", "read2"] if is_paired_end() else ["read1"],
         ),
     log:
-        "results/fastp/{sample}.log",
+        "results/fastp/log/{sample}.log",
     message:
         "trimming and QC filtering reads using fastp"
     params:

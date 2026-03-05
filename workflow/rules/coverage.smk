@@ -18,7 +18,7 @@ rule deeptools_coverage:
             + f" --filterRNAstrand {('reverse' if(config['libtype']== 'sense' and wc.strand== 'plus') or(config['libtype']== 'antisense' and wc.strand== 'minus') else 'forward')}"
         ),
     log:
-        "results/{step}/{sample}_cpm_{strand}.log",
+        "results/{step}/log/{sample}_cpm_{strand}.log",
     message:
         "generate normalized coverage files using deeptools"
     wrapper:

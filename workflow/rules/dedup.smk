@@ -8,7 +8,7 @@ rule get_fastq:
     message:
         "obtaining fastq files"
     log:
-        "results/get_fastq/{sample}_{read}.log",
+        "results/get_fastq/log/{sample}_{read}.log",
     shell:
         "ln -s {input} {output.fastq};"
         "echo 'made symbolic link from {input} to {output.fastq}' > {log}"

@@ -67,7 +67,7 @@ rule samtools_sort:
     output:
         "results/mapped/{sample}.bam",
     log:
-        "results/mapped/{sample}.log",
+        "results/mapped/log/{sample}.log",
     message:
         "--- Sort reads after mapping."
     params:
@@ -83,7 +83,7 @@ rule samtools_index:
     output:
         "results/mapped/{sample}.bam.bai",
     log:
-        "results/mapped/{sample}_index.log",
+        "results/mapped/log/{sample}_index.log",
     message:
         "--- Index reads."
     params:
