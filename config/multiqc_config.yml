@@ -1,4 +1,5 @@
 report_header_info:
+  - Snakemake workflow: https://github.com/MPUSP/snakemake-bacterial-rnaseq-processing
   - Contact E-mail: "bioinformatics@mpusp.mpg.de"
   - Application Type: "Bacterial RNAseq"
   - Sequencing Platform: "Illumina"
