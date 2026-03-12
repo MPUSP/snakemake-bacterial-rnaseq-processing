@@ -1,113 +1,93 @@
-# -----------------------------------------------------
-# module to fetch genome from NCBI or Ensemble
-# -----------------------------------------------------
 rule get_genome:
+    input:
+        fasta=lambda wildcards: (
+            config["get_genome"]["fasta"]
+            if config["get_genome"]["database"] == "manual"
+            else []
+        ),
+        gff=lambda wildcards: (
+            config["get_genome"]["gff"]
+            if config["get_genome"]["database"] == "manual"
+            else []
+        ),
     output:
-        path=directory("results/genome"),
         fasta="results/genome/genome.fasta",
         gff="results/genome/genome.gff",
-    conda:
-        "../envs/get_genome.yml"
+        fai="results/genome/genome.fasta.fai",
     message:
-        """--- Parsing genome GFF and FASTA files."""
+        "--- Parsing genome GFF and FASTA files."
     params:
         database=config["get_genome"]["database"],
         assembly=config["get_genome"]["assembly"],
-        fasta=config["get_genome"]["fasta"],
-        gff=config["get_genome"]["gff"],
+        gff_source_types=config["get_genome"]["gff_source_type"],
     log:
-        path="results/genome/log/get_genome.log",
-    script:
-        "../scripts/get_genome.py"
+        "results/genome/get_genome.log",
+    wrapper:
+        "https://raw.githubusercontent.com/MPUSP/mpusp-snakemake-wrappers/refs/heads/main/get_genome"
 
 
-# -----------------------------------------------------
-# module to map reads to ref genome using STAR aligner
-# -----------------------------------------------------
-rule create_star_index:
+rule star_index:
     input:
-        genome="results/genome/genome.fasta",
+        fasta=rules.get_genome.output.fasta,
     output:
-        path=directory("results/genome/index"),
-    conda:
-        "../envs/star.yml"
-    message:
-        """--- STAR index creation."""
+        directory("results/mapped/index/"),
+    threads: 1
     params:
-        index=config["star"]["index"],
-        indexNbases=config["star"]["genomeSAindexNbases"],
+        extra=config["star"]["index"],
     log:
-        path="results/genome/log/star_index.log",
-    shell:
-        "if [ {params.index} == None ]; then "
-        "mkdir {output.path};"
-        "STAR --runMode genomeGenerate "
-        "--genomeDir {output.path} "
-        "--genomeFastaFiles {input.genome} "
-        "--genomeSAindexNbases {params.indexNbases} > {log.path}; "
-        "rm -f ./Log.out; "
-        "else "
-        "ln -s {params.index} {output.path}; "
-        "echo 'made symbolic link from {params.index} to {output.path}' > {log.path}; "
-        "fi;"
+        "results/mapped/index/index.log",
+    message:
+        "--- Create STAR index."
+    wrapper:
+        "v7.2.0/bio/star/index"
 
 
-# -----------------------------------------------------
-# module to map reads to ref genome using STAR aligner
-# -----------------------------------------------------
 rule star_mapping:
     input:
-        fastqs=get_mapping_input,
-        genome=rules.create_star_index.output,
+        fq1="results/fastp/{sample}_read1.fastq.gz",
+        fq2="results/fastp/{sample}_read2.fastq.gz" if is_paired_end() else [],
+        idx=rules.star_index.output,
     output:
-        bam="results/mapped/unsorted/{sample}.bam",
-    conda:
-        "../envs/star.yml"
+        aln="results/mapped/unsorted/{sample}/mapped.bam",
+        log_final="results/mapped/unsorted/{sample}/Log.final.out",
+    log:
+        "results/mapped/unsorted/{sample}/star.log",
     message:
-        """--- STAR mapping."""
+        "--- STAR mapping."
     params:
-        default=config["star"]["default"],
-        multi=config["star"]["multi"],
-        sam_multi=config["star"]["sam_multi"],
-        intron_max=config["star"]["intron_max"],
-        outprefix=lambda w, output: f"{os.path.splitext(output.bam)[0]}_",
-        input_str=lambda w, input: (
-            " ".join(input.fastqs) if len(input.fastqs) == 2 else input.fastqs
-        ),
+        extra=config["star"]["extra"],
+    threads: max(1, int(workflow.cores * 0.25))
+    wrapper:
+        "v7.2.0/bio/star/align"
+
+
+rule samtools_sort:
+    input:
+        "results/mapped/unsorted/{sample}/mapped.bam",
+    output:
+        "results/mapped/{sample}.bam",
     log:
         "results/mapped/log/{sample}.log",
-    threads: int(workflow.cores * 0.2) if int(workflow.cores * 0.2) >= 1 else 1  # assign 20% of max cores.
-    shell:
-        "STAR "
-        "--runThreadN {threads} "
-        "--genomeDir {input.genome} "
-        "--readFilesIn {params.input_str} "
-        "{params.default} "
-        "--outFilterMultimapNmax {params.multi} "
-        "--alignIntronMax {params.intron_max} "
-        "--outSAMmultNmax {params.sam_multi} "
-        "--outFileNamePrefix {params.outprefix} "
-        "> {output.bam} 2> {log}"
-
-
-# ---------------------------------------------------
-# module to sort and index bam file using samtools
-# ---------------------------------------------------
-rule mapping_sorted_bam:
-    input:
-        bam=rules.star_mapping.output.bam,
-    output:
-        bam="results/mapped/{sample}.bam",
-        bai="results/mapped/{sample}.bam.bai",
-    conda:
-        "../envs/samtools.yml"
-    log:
-        "results/mapped/log/samtools_{sample}.log",
     message:
-        """--- Samtools sort and index bam files."""
+        "--- Sort reads after mapping."
     params:
-        tmp="results/mapped/sort_{sample}_tmp",
-    threads: int(workflow.cores * 0.2)  # assign 20% of max cores
-    shell:
-        "samtools sort -@ {threads} -O bam -T {params.tmp} -o {output.bam} {input.bam} &> {log}; "
-        "samtools index -@ {threads} {output.bam} 2>> {log}"
+        extra=config["samtools"]["sort"],
+    threads: max(1, int(workflow.cores * 0.25))
+    wrapper:
+        "v7.0.0/bio/samtools/sort"
+
+
+rule samtools_index:
+    input:
+        "results/mapped/{sample}.bam",
+    output:
+        "results/mapped/{sample}.bam.bai",
+    log:
+        "results/mapped/log/{sample}_index.log",
+    message:
+        "--- Index reads."
+    params:
+        extra=config["samtools"]["index"],
+    threads: max(1, int(workflow.cores * 0.25))
+    wrapper:
+        "v7.0.0/bio/samtools/index"

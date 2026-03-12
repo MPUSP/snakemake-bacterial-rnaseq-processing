@@ -33,34 +33,27 @@ def extract_umi(R1, R2, output, log, error):
 
 # set input/output parameters
 # ---------------------------
-is_paired_end = False
-
-# paired-end
-if len(snakemake.input) > 2:
-    is_paired_end = True
-    file_r1 = snakemake.input[0]
-    file_r2 = snakemake.input[1]
-    file_umis = snakemake.input[2]
-    output_r1 = snakemake.output["R1"]
-    output_r2 = snakemake.output["R2"]
-# single-end
-else:
-    file_r1 = snakemake.input[0]
-    file_umis = snakemake.input[1]
-    output_r1 = snakemake.output["fastq"]
-
-
-output_log = snakemake.log["path"]
+output_log = snakemake.log[0]
 log = []
 error = []
 
-if is_paired_end:
+# paired-end
+if len(snakemake.input) > 2:
+    file_r1 = snakemake.input["fq1"]
+    file_r2 = snakemake.input["fq2"]
+    file_umis = snakemake.input["fqumi"]
+    output_r1 = snakemake.output["fq1"]
+    output_r2 = snakemake.output["fq2"]
     log += ["Processing R1 ..."]
     extract_umi(R1=file_r1, R2=file_umis, output=output_r1, log=log, error=error)
-    # need to write R2 as well
     log += ["Processing R2 ..."]
     extract_umi(R1=file_r2, R2=file_umis, output=output_r2, log=log, error=error)
+# single-end
 else:
+    is_paired_end = False
+    file_r1 = snakemake.input["fq1"]
+    file_umis = snakemake.input["fqumi"]
+    output_r1 = snakemake.output["fq1"]
     extract_umi(R1=file_r1, R2=file_umis, output=output_r1, log=log, error=error)
 
 

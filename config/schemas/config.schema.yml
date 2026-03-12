@@ -1,0 +1,88 @@
+$schema: "https://json-schema.org/draft/2020-12/schema"
+description: config file structure
+properties:
+  samplesheet:
+    type: string
+  libtype:
+    type: string
+  get_genome:
+    properties:
+      database:
+        type: [string, "null"]
+      assembly:
+        type: [string, "null"]
+      fasta:
+        type: [string, "null"]
+      gff:
+        type: [string, "null"]
+      gff_source_type:
+        type: array
+  extract_features:
+    properties:
+      biotypes:
+        type: array
+        items:
+          type: string
+  umi_extraction:
+    properties:
+      method:
+        type: string
+        enum: ["regex", "string", "none"]
+      pattern:
+        type: string
+  umi_dedup:
+    type: string
+  fastp:
+    properties:
+      extra:
+        type: string
+  star:
+    properties:
+      index:
+        type: [string, "null"]
+      extra:
+        type: array
+        items:
+          type: string
+  samtools:
+    properties:
+      sort:
+        type: string
+      index:
+        type: string
+  feature_counts:
+    properties:
+      defaults:
+        type: array
+        items:
+          type: string
+  deeptools:
+    properties:
+      genome_size:
+        type: number
+      extra:
+        type: string
+  fastqc:
+    properties:
+      extra:
+        type: string
+  multiqc:
+    properties:
+      config:
+        type: string
+      extra:
+        type: string
+required:
+  - samplesheet
+  - libtype
+  - get_genome
+  - extract_features
+  - umi_extraction
+  - umi_dedup
+  - fastp
+  - star
+  - samtools
+  - feature_counts
+  - deeptools
+  - fastqc
+  - multiqc

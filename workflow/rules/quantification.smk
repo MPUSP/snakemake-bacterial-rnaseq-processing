@@ -1,6 +1,3 @@
-# -----------------------------------------------------
-# module to extract selected biotypes from gff file
-# -----------------------------------------------------
 rule extract_features:
     input:
         gff="results/genome/genome.gff",
@@ -9,8 +6,9 @@ rule extract_features:
     conda:
         "../envs/extract_features.yml"
     message:
-        """--- Extract selected biotype features from genome annotation."""
+        "--- Extract selected biotype features from genome annotation."
     params:
+        gff_source_types=config["get_genome"]["gff_source_type"],
         features=config["extract_features"]["biotypes"],
     log:
         path="results/extracted_features/log/extract_features.log",
@@ -18,9 +16,6 @@ rule extract_features:
         "../scripts/extract_features.py"
 
 
-# -----------------------------------------------------
-# module to generate gtf file from gff
-# -----------------------------------------------------
 rule gff2gtf:
     input:
         gff="results/extracted_features/biotypes.gff",
@@ -29,89 +24,53 @@ rule gff2gtf:
     conda:
         "../envs/extract_features.yml"
     message:
-        """--- gff to gtf conversion."""
+        "--- gff to gtf conversion."
     log:
         path="results/extracted_features/log/gff2gtf.log",
     script:
         "../scripts/gff2gtf.py"
 
 
-# -----------------------------------------------------
-# module to generate gtf file from gff
-# -----------------------------------------------------
-if is_single_end_experiment:
-
-    rule quantify_biotypes:
-        input:
-            bam="results/deduplicated/{sample}.bam",
-            gtf="results/extracted_features/biotypes.gtf",
-        output:
-            counts="results/quantify_biotypes/{sample}.counts",
-            summary="results/quantify_biotypes/{sample}.counts.summary",
-        conda:
-            "../envs/feature_counts.yml"
-        message:
-            """--- Quantify biotpyes with subread's featureCount."""
-        log:
-            path="results/quantify_biotypes/log/feature_counts_{sample}.log",
-        threads: min(max(1, int(workflow.cores * 0.2)), 64)  # assign 20% of max cores
-        params:
-            defaults=config["feature_counts"]["defaults"],
-            libtype=config["libtype"],
-        shell:
-            "if [ {params.libtype} == 'sense' ]; then "
-            "libtype=`echo -e '-s 1'`; "
-            "else libtype=`echo -e '-s 2'`; "
-            "fi; "
-            "featureCounts -T {threads} "
-            "{params.defaults} "
-            "${{libtype}} "
-            "-a {input.gtf} "
-            "-o {output.counts} "
-            "{input.bam} &> {log.path}"
-
-
-if is_paired_end_experiment:
-
-    rule quantify_biotypes:
-        input:
-            bam="results/deduplicated/{sample}.bam",
-            gtf="results/extracted_features/biotypes.gtf",
-        output:
-            counts="results/quantify_biotypes/{sample}.counts",
-            summary="results/quantify_biotypes/{sample}.counts.summary",
-        conda:
-            "../envs/feature_counts.yml"
-        message:
-            """--- Quantify biotpyes with subread's featureCount."""
-        log:
-            path="results/quantify_biotypes/log/feature_counts_{sample}.log",
-        threads: min(max(1, int(workflow.cores * 0.2)), 64)  # assign 20% of max cores
-        params:
-            defaults=config["feature_counts"]["defaults"],
-            libtype=config["libtype"],
-        shell:
-            "if [ {params.libtype} == 'sense' ]; then "
-            "libtype=`echo -e '-s 1'`; "
-            "else libtype=`echo -e '-s 2'`; "
-            "fi; "
-            "featureCounts -T {threads} "
-            "{params.defaults} "
-            "${{libtype}} "
-            "-a {input.gtf} "
-            "-p --countReadPairs "
-            "-o {output.counts} "
-            "{input.bam} &> {log.path}"
-
-
-# -----------------------------------------------------------
-# module to combine count tables and add feature information
-# -----------------------------------------------------------
-rule combine_count_tables:
+rule quantify_biotypes:
     input:
-        counts=expand("results/quantify_biotypes/{sample}.counts", sample=samples.index),
+        bam="results/deduplicated/{sample}.bam",
+        gtf="results/extracted_features/biotypes.gtf",
+    output:
+        counts="results/qc/biotypes/{sample}.counts",
+        summary="results/qc/biotypes/{sample}.counts.summary",
+    conda:
+        "../envs/feature_counts.yml"
+    message:
+        "--- Quantify biotpyes with subread's featureCount."
+    log:
+        path="results/qc/biotypes/log/{sample}.counts.log",
+    threads: max(1, int(workflow.cores * 0.25))
+    params:
+        defaults=config["feature_counts"]["defaults"],
+        libtype=config["libtype"],
+        paired="-p --countReadPairs" if is_paired_end() else "",
+    shell:
+        """
+        if [ {params.libtype} == 'sense' ]; then
+            libtype=`echo -e '-s 1'`;
+        else
+            libtype=`echo -e '-s 2'`;
+        fi;
+        featureCounts -T {threads} \
+        {params.defaults} \
+        ${{libtype}} \
+        -a {input.gtf} \
+        {params.paired} \
+        -o {output.counts} \
+        {input.bam} &> {log.path}
+        """
+
+
+rule merge_counts:
+    input:
+        counts=expand("results/qc/biotypes/{sample}.counts", sample=samples.index),
         summary=expand(
-            "results/quantify_biotypes/{sample}.counts.summary", sample=samples.index
+            "results/qc/biotypes/{sample}.counts.summary", sample=samples.index
         ),
         gtf="results/extracted_features/biotypes.gtf",
     output:
@@ -119,7 +78,7 @@ rule combine_count_tables:
     conda:
         "../envs/quantify_biotypes.yml"
     message:
-        """--- Combine count tables for all samples."""
+        "--- Combine count tables for all samples."
     log:
         path="results/quantify_biotypes/log/merge_counts.log",
     params:
@@ -128,9 +87,6 @@ rule combine_count_tables:
         "../scripts/merge_counts.py"
 
 
-# -----------------------------------------------------------
-# module to summarize biotype distributions
-# -----------------------------------------------------------
 rule summarize_biotypes:
     input:
         table="results/quantify_biotypes/all_samples_counts.tsv",
@@ -140,7 +96,7 @@ rule summarize_biotypes:
     conda:
         "../envs/quantify_biotypes.yml"
     message:
-        """--- Extract fraction of biotypes for all samples."""
+        "--- Extract fraction of biotypes for all samples."
     log:
         path="results/quantify_biotypes/log/summarize_biotypes.log",
     params:

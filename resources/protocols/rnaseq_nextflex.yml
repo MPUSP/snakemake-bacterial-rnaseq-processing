@@ -11,7 +11,7 @@ get_genome:
       "RefSeq": "gene",
       "RefSeq": "pseudogene",
       "RefSeq": "CDS",
-      "Protein Homology": "CDS"
+      "Protein Homology": "CDS",
     ]
 
 extract_features:
@@ -19,50 +19,26 @@ extract_features:
 
 umi_extraction:
   method: "string"
-  pattern:
-    [
-      "--bc-pattern=NNNN ",
-      "--bc-pattern2=NNNN"
-    ]
+  pattern: "--bc-pattern=NNNN --bc-pattern2=NNNN"
 umi_dedup: "--edit-distance-threshold=0"
 
-trunc_fastq:
-  default:
-    [
-      "-u='-4' ",
-      "-U='-4'"
-    ]
-
-cutadapt:
-  read1_adapter: "TGGAATTCTCGGGTGCCAAGGAACTCCAGTCAC"
-  read2_adapter: "GATCGTCGGACTGTAGAACTCTGAACGTGTAGATC"
-  default:
-    [
-      "-q 10 ",
-      "-m 22 ",
-      "--overlap=3"
-    ]
+fastp:
+  extra: "-M 10 -l 18 --trim_tail1=4 --trim_tail2=4"
 
 star:
-  index: Null
-  genomeSAindexNbases: 9
-  multi: 10
-  sam_multi: 1
-  intron_max: 1
-  default:
+  index: "--genomeSAindexNbases 9"
+  extra:
     [
-      "--readFilesCommand zcat ",
-      "--outSAMstrandField None ",
-      "--outSAMattributes All ",
-      "--outSAMattrIHstart 0 ",
-      "--outFilterType Normal ",
-      "--outFilterMultimapScoreRange 1 ",
-      "-o STARmappings ",
-      "--outSAMtype BAM Unsorted ",
-      "--outStd BAM_Unsorted ",
-      "--outMultimapperOrder Random ",
+      "--outFilterMultimapNmax 10",
+      "--outSAMmultNmax 1",
+      "--outMultimapperOrder Random",
+      "--alignIntronMax 1",
       "--alignEndsType EndToEnd",
     ]
+
+samtools:
+  sort: ""
+  index: ""
 
 feature_counts:
   defaults:
@@ -72,18 +48,16 @@ feature_counts:
       "-g locus_tag",
       "-M",
       "--fracOverlap 0.2",
-      "--largestOverlap"
+      "--largestOverlap",
     ]
 
 deeptools:
-  bin_size: 1
-  normalize: "CPM"
-  defaults: "--exactScaling"
-  paired_end: "--extendReads"
+  genome_size: 2000000
+  extra: "--binSize 1 --normalizeUsing CPM --exactScaling --extendReads"
+
+fastqc:
+  extra: "--quiet --nogroup"
 
 multiqc:
-    config: "config/multiqc_config.yml"
-    defaults: ["--dirs-depth 2 ",
-        "--exclude general_stats ",
-        "--force ",
-        "--dirs"]
+  config: "config/multiqc_config.yml"
+  extra: "--dirs"

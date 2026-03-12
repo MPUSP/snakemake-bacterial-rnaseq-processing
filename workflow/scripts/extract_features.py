@@ -17,6 +17,14 @@ output_log = snakemake.log["path"]
 log = []
 error = []
 
+default_sources = [
+    {"RefSeq": "gene"},
+    {"RefSeq": "pseudogene"},
+    {"RefSeq": "CDS"},
+    {"Protein Homology": "CDS"},
+]
+gff_source_types = snakemake.params.get("gff_source_types", default_sources)
+
 if not path.exists(input_gff):
     error += ["The parameter 'gff' is not a valid path to a GFF file"]
 
@@ -25,9 +33,10 @@ try:
         try:
             with open(input_gff, "r") as gff_file:
                 examiner = GFFExaminer()
-                limits = dict(
-                    gff_source_type=[("RefSeq", "gene"), ("RefSeq", "pseudogene")]
-                )
+                gff_source_type = []
+                for i in gff_source_types:
+                    gff_source_type += list(i.items())
+                limits = dict(gff_source_type=gff_source_type)
                 for rec in GFF.parse(gff_file, limit_info=limits):
                     sel_features = []
                     for feat in rec.features:

@@ -7,8 +7,6 @@
 # conda envs file.
 # -----------------------------------------------------------------------------
 
-import os
-import pandas as pd
 import yaml
 
 
@@ -33,13 +31,14 @@ except IOError:
     error += [f"Error occurred when processing input file '{input_envs}'."]
 
 try:
-    with open(input_conf, "r") as input_conf:
-        config_dic = yaml.safe_load(input_conf)
+    with open(input_conf, "r") as config_file:
+        config_dic = yaml.safe_load(config_file)
 except IOError:
+    config_dic = {}
     error += [f"Error occurred when reading input config '{input_conf}'."]
 
 # software info to multiqc config
-config_dic["software_versions"] = dict(version_dic)
+config_dic["software_versions"] = version_dic
 
 try:
     with open(output_yml, "w") as out_yml:
@@ -48,13 +47,12 @@ try:
 except IOError:
     error += [f"Output file '{output_yml}' can not be opened."]
 
-
 try:
     with open(out_multi, "w") as multi_yml:
         log += [f"Writing output YAML file '{out_multi}'..."]
         yaml.dump(config_dic, multi_yml, default_flow_style=False)
 except IOError:
-    error += [f"Output file '{output_yml}' can not be opened."]
+    error += [f"Output file '{out_multi}' can not be opened."]
 
 
 # print error/log messages

@@ -3,7 +3,7 @@ channels:
   - conda-forge
   - bioconda
 dependencies:
-  - umi_tools=1.1.5
-  - samtools=1.21
-  - htslib=1.21
+  - umi_tools=1.1.6
+  - samtools=1.23
+  - htslib=1.23
   - dnaio=1.2.2
