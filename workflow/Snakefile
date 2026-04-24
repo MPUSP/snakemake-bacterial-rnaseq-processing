@@ -1,5 +1,3 @@
-import os
-
 epilog = """
 \033[36m
 Bacterial-rnaseq-processing: A Snakemake workflow
@@ -8,6 +6,10 @@ for the processing of short read RNAseq data in bacteria.
 Max Planck Unit for the Science of Pathogens. Copyright (c) 2026.
 \033[0m
 """
+
+
+# container definition (optional)
+container: "oras://ghcr.io/mpusp/snakemake-bacterial-rnaseq-processing:latest"
 
 
 # load configuration
