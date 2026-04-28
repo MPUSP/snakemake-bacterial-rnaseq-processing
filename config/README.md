@@ -1,6 +1,7 @@
 ## Workflow overview
 
-This workflow represents **Module 1 of a two-step workflow set** for the analysis of bacterial transcriptomics data. The second workflow handling the differential expression analysis is [**snakemake-bacterial-rnaseq-deseq**](https://github.com/MPUSP/snakemake-bacterial-rnaseq-deseq).
+This workflow can be used in combination with subsequent workflows for follow-up analyses.
+For example, differential expression analysis can be performed using [**snakemake-bacterial-rnaseq-deseq**](https://github.com/MPUSP/snakemake-bacterial-rnaseq-deseq).
 
 This workflow is a best-practice workflow for the processing of short read sequencing data in bacteria. The workflow is built using [snakemake](https://snakemake.readthedocs.io/en/stable/) and consists of the following steps:
 
