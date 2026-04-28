@@ -1,5 +1,22 @@
 # Changelog
 
+## [2.0.0](https://github.com/MPUSP/snakemake-bacterial-rnaseq-processing/compare/v1.4.0...v2.0.0) (2026-04-28)
+
+
+### ⚠ BREAKING CHANGES
+
+* added apptainer
+
+### Features
+
+* added apptainer ([270b9da](https://github.com/MPUSP/snakemake-bacterial-rnaseq-processing/commit/270b9da702562be00583e062718ae0dfb002f545))
+
+
+### Bug Fixes
+
+* docs ([c37bbaa](https://github.com/MPUSP/snakemake-bacterial-rnaseq-processing/commit/c37bbaa49cfcf9941779d5a31a7f654a87c16f35))
+* update config schema for workflow catalog ([eb4e9b6](https://github.com/MPUSP/snakemake-bacterial-rnaseq-processing/commit/eb4e9b6d17efc09de736977625e8de920f18d2b5))
+
 ## [1.4.0](https://github.com/MPUSP/snakemake-bacterial-rnaseq-processing/compare/v1.3.0...v1.4.0) (2026-03-12)
 
 
