@@ -3,75 +3,143 @@ description: config file structure
 properties:
   samplesheet:
     type: string
+    description: Path to the sample sheet TSV file.
+    default: "config/samplesheet/samples.tsv"
   libtype:
     type: string
+    description: Library strandedness used during quantification.
+    default: "antisense"
   get_genome:
+    type: object
     properties:
       database:
         type: [string, "null"]
+        description: Genome source database identifier.
+        default: "ncbi"
       assembly:
         type: [string, "null"]
+        description: Assembly accession or identifier to download.
+        default: "GCF_043231225.1"
       fasta:
         type: [string, "null"]
+        description: Optional path to a local FASTA file.
+        default: null
       gff:
         type: [string, "null"]
+        description: Optional path to a local GFF annotation file.
+        default: null
       gff_source_type:
         type: array
+        description: Source/feature-type pairs used to select annotation records.
+        default:
+          - RefSeq: gene
+          - RefSeq: pseudogene
+          - RefSeq: CDS
+          - Protein Homology: CDS
   extract_features:
+    type: object
     properties:
       biotypes:
         type: array
+        description: Feature biotypes to keep for downstream summarization.
+        default: ["protein_coding", "pseudogene", "ncRNA", "rRNA", "tRNA"]
         items:
           type: string
   umi_extraction:
+    type: object
     properties:
       method:
         type: string
         enum: ["regex", "string", "none"]
+        description: UMI extraction mode, one of "regex", "string", or "none".
+        default: "none"
       pattern:
         type: string
+        description: UMI pattern used by the selected extraction method.
+        default: ""
   umi_dedup:
     type: string
+    description: Additional command-line options for UMI deduplication.
+    default: "--edit-distance-threshold=0"
   fastp:
+    type: object
     properties:
       extra:
         type: string
+        description: Extra arguments passed to fastp.
+        default: see config.yml
   star:
+    type: object
     properties:
       index:
         type: [string, "null"]
+        description: STAR indexing options.
+        default: "--genomeSAindexNbases 9"
       extra:
         type: array
+        description: Extra arguments passed to STAR during mapping.
+        default:
+          - "--outFilterMultimapNmax 10"
+          - "--outSAMmultNmax 1"
+          - "--outMultimapperOrder Random"
+          - "--alignIntronMax 1"
         items:
           type: string
   samtools:
+    type: object
     properties:
       sort:
         type: string
+        description: Extra options passed to samtools sort.
+        default: ""
       index:
         type: string
+        description: Extra options passed to samtools index.
+        default: ""
   feature_counts:
+    type: object
     properties:
       defaults:
         type: array
+        description: Default options passed to featureCounts.
+        default:
+          - "-F GTF"
+          - "-t gene"
+          - "-g locus_tag"
+          - "-M"
+          - "--fracOverlap 0.2"
+          - "--largestOverlap"
         items:
           type: string
   deeptools:
+    type: object
     properties:
       genome_size:
         type: number
+        description: Effective genome size used for coverage normalization.
+        default: 2000000
       extra:
         type: string
+        description: Extra options passed to bamCoverage.
+        default: "--binSize 1 --normalizeUsing CPM --exactScaling --extendReads"
   fastqc:
+    type: object
     properties:
       extra:
         type: string
+        description: Extra arguments passed to FastQC.
+        default: "--quiet --nogroup"
   multiqc:
+    type: object
     properties:
       config:
         type: string
+        description: Path to the MultiQC configuration file.
+        default: "config/multiqc_config.yml"
       extra:
         type: string
+        description: Extra arguments passed to MultiQC.
+        default: "--dirs"
 required:
   - samplesheet
   - libtype

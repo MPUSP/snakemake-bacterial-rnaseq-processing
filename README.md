@@ -8,7 +8,9 @@
 
 ---
 
-A Snakemake workflow for the processing of short read rnaseq data in bacteria.
+A Snakemake workflow for the processing of short read RNA-Seq data in bacteria.
+This workflow can be used in combination with subsequent workflows for follow-up analyses.
+For example, differential expression analysis can be performed using [**snakemake-bacterial-rnaseq-deseq**](https://github.com/MPUSP/snakemake-bacterial-rnaseq-deseq).
 
 - [Snakemake workflow: bacterial-rnaseq-processing](#snakemake-workflow-bacterial-rnaseq-processing)
   - [Usage](#usage)
@@ -36,7 +38,7 @@ This workflow is a best-practice workflow for the processing of short read seque
 3. Cut adapters and filter by length and/or sequencing quality score ([fastp](https://github.com/OpenGene/fastp))
 4. Identify unique molecular identifier (UMI, [UMI-tools](https://umi-tools.readthedocs.io/en/latest/))
 5. Map reads to the reference genome ([STAR aligner](https://github.com/alexdobin/STAR))
-6. Sort and index aligned rnaseq data ([Samtools](http://www.htslib.org/))
+6. Sort and index aligned RNA-Seq data ([Samtools](http://www.htslib.org/))
 7. Deduplicate reads by unique molecular identifier (UMI, [UMI-tools](https://umi-tools.readthedocs.io/en/latest/))
 8. Generate cpm normalized coverage files ([deepTools](https://deeptools.readthedocs.io/en/latest/))
 9. Quantify biotype features ([featureCounts](https://subread.sourceforge.net/featureCounts.html))
