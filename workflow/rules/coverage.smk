@@ -10,6 +10,8 @@ rule deeptools_coverage:
         bai="results/{step}/{sample}.bam.bai",
     output:
         bw="results/{step}/{sample}_cpm_{strand}.bw",
+    log:
+        "results/{step}/log/{sample}_cpm_{strand}.log",
     threads: max(1, int(workflow.cores * 0.25))
     params:
         effective_genome_size=config["deeptools"]["genome_size"],
@@ -17,8 +19,6 @@ rule deeptools_coverage:
             config["deeptools"]["extra"]
             + f" --filterRNAstrand {('reverse' if(config['libtype']== 'sense' and wc.strand== 'plus') or(config['libtype']== 'antisense' and wc.strand== 'minus') else 'forward')}"
         ),
-    log:
-        "results/{step}/log/{sample}_cpm_{strand}.log",
     message:
         "generate normalized coverage files using deeptools"
     wrapper:

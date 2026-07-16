@@ -3,7 +3,6 @@ from snakemake.logging import logger
 from snakemake.utils import validate
 from pathlib import Path
 
-
 # read sample sheet
 # -----------------------------------------------------
 samples = (

@@ -9,7 +9,7 @@ Max Planck Unit for the Science of Pathogens. Copyright (c) 2026.
 
 
 # container definition (optional)
-container: "oras://ghcr.io/mpusp/snakemake-bacterial-rnaseq-processing:latest"
+containerized: "oras://ghcr.io/mpusp/snakemake-bacterial-rnaseq-processing:latest"
 
 
 # load configuration

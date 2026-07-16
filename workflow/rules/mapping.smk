@@ -14,14 +14,14 @@ rule get_genome:
         fasta="results/genome/genome.fasta",
         gff="results/genome/genome.gff",
         fai="results/genome/genome.fasta.fai",
-    message:
-        "--- Parsing genome GFF and FASTA files."
+    log:
+        "results/genome/get_genome.log",
     params:
         database=config["get_genome"]["database"],
         assembly=config["get_genome"]["assembly"],
         gff_source_types=config["get_genome"]["gff_source_type"],
-    log:
-        "results/genome/get_genome.log",
+    message:
+        "--- Parsing genome GFF and FASTA files."
     wrapper:
         "https://raw.githubusercontent.com/MPUSP/mpusp-snakemake-wrappers/refs/heads/main/get_genome"
 
@@ -31,11 +31,11 @@ rule star_index:
         fasta=rules.get_genome.output.fasta,
     output:
         directory("results/mapped/index/"),
+    log:
+        "results/mapped/index/index.log",
     threads: 1
     params:
         extra=config["star"]["index"],
-    log:
-        "results/mapped/index/index.log",
     message:
         "--- Create STAR index."
     wrapper:
@@ -52,11 +52,11 @@ rule star_mapping:
         log_final="results/mapped/unsorted/{sample}/Log.final.out",
     log:
         "results/mapped/unsorted/{sample}/star.log",
-    message:
-        "--- STAR mapping."
+    threads: max(1, int(workflow.cores * 0.25))
     params:
         extra=config["star"]["extra"],
-    threads: max(1, int(workflow.cores * 0.25))
+    message:
+        "--- STAR mapping."
     wrapper:
         "v7.2.0/bio/star/align"
 
@@ -68,11 +68,11 @@ rule samtools_sort:
         "results/mapped/{sample}.bam",
     log:
         "results/mapped/log/{sample}.log",
-    message:
-        "--- Sort reads after mapping."
+    threads: max(1, int(workflow.cores * 0.25))
     params:
         extra=config["samtools"]["sort"],
-    threads: max(1, int(workflow.cores * 0.25))
+    message:
+        "--- Sort reads after mapping."
     wrapper:
         "v7.0.0/bio/samtools/sort"
 
@@ -84,10 +84,10 @@ rule samtools_index:
         "results/mapped/{sample}.bam.bai",
     log:
         "results/mapped/log/{sample}_index.log",
-    message:
-        "--- Index reads."
+    threads: max(1, int(workflow.cores * 0.25))
     params:
         extra=config["samtools"]["index"],
-    threads: max(1, int(workflow.cores * 0.25))
+    message:
+        "--- Index reads."
     wrapper:
         "v7.0.0/bio/samtools/index"
