@@ -1,9 +1,37 @@
-# --------------------------------------------------------------
-# module to generate normalized coverage tracks using deeptools
-# Note: deeptools implements the strand selection in the counter intuitive way:
-# This means, that when using deeptools for extracting coverage files,
-# strand must always be switched. forward == reverse!
-# --------------------------------------------------------------
+
+rule gffread_gff:
+    input:
+        fasta="results/genome/genome.fasta",
+        annotation="results/genome/genome.gff",
+    output:
+        records="results/genome/genome.bed",
+    log:
+        "results/genome/gffread.log",
+    threads: 1
+    params:
+        extra=config["infer_experiment"]["gffread"]["extra"],
+    message:
+        "convert genome annotation from GFF to BED format"
+    wrapper:
+        "v9.6.0/bio/gffread"
+
+
+rule rseqc_infer_experiment:
+    input:
+        aln="results/mapped/{sample}.bam",
+        refgene="results/genome/genome.bed",
+    output:
+        "results/infer_experiment/{sample}.txt",
+    log:
+        "results/infer_experiment/{sample}.log",
+    params:
+        extra=config["infer_experiment"]["rseqc"]["extra"],
+    message:
+        "infer experiment type from mapping to features"
+    wrapper:
+        "v9.16.0/bio/rseqc/infer_experiment"
+
+
 rule deeptools_coverage:
     input:
         bam="results/{step}/{sample}.bam",

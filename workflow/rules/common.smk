@@ -110,6 +110,10 @@ def get_multiqc_input(wildcards):
         sample=samples.index,
     )
     inputs += expand(
+        "results/infer_experiment/{sample}.txt",
+        sample=samples.index,
+    )
+    inputs += expand(
         "results/qc/{step}/{sample}.flagstat",
         step=["mapped", "deduplicated"],
         sample=samples.index,

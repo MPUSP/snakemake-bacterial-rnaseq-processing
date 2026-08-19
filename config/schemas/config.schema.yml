@@ -85,6 +85,25 @@ properties:
           - "--alignIntronMax 1"
         items:
           type: string
+  
+  infer_experiment:
+    type: object
+    properties:
+      gffread:
+        type: object
+        properties:
+          extra:
+            type: string
+            description: Extra arguments passed to gffread.
+            default: ""
+      rseqc:
+        type: object
+        properties:
+          extra:
+            type: string
+            description: Extra arguments passed to rseqc infer_experiment.
+            default: "--sample-size 10000"
+
   samtools:
     type: object
     properties:
@@ -149,6 +168,7 @@ required:
   - umi_dedup
   - fastp
   - star
+  - infer_experiment
   - samtools
   - feature_counts
   - deeptools
