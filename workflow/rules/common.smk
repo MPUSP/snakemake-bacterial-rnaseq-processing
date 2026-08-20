@@ -78,6 +78,14 @@ def get_stats_input(wildcards):
         )
 
 
+def get_bw_correlation(wildcards):
+    return expand(
+        "results/correlation/{step}/{sample}_cpm.bw",
+        step=wildcards.step,
+        sample=samples.index,
+    )
+
+
 # returns path to conda envs files
 def get_conda_envs_files():
     wf_dir = Path(workflow.basedir).absolute() / "envs"
@@ -117,6 +125,15 @@ def get_multiqc_input(wildcards):
         "results/qc/{step}/{sample}.flagstat",
         step=["mapped", "deduplicated"],
         sample=samples.index,
+    )
+    inputs += expand(
+        "results/coverage/{step}/{sample}_coverage.png",
+        step=["mapped", "deduplicated"],
+        sample=samples.index,
+    )
+    inputs += expand(
+        "results/correlation/{step}/correlation.svg",
+        step=["mapped", "deduplicated"],
     )
     inputs += expand(
         "results/qc/biotypes/{sample}.counts.summary",

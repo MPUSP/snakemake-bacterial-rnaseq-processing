@@ -51,3 +51,70 @@ rule deeptools_coverage:
         "generate normalized coverage files using deeptools"
     wrapper:
         "v7.0.0/bio/deeptools/bamcoverage"
+
+
+rule deeptools_coverage_combined:
+    input:
+        bam="results/{step}/{sample}.bam",
+        bai="results/{step}/{sample}.bam.bai",
+    output:
+        bw="results/correlation/{step}/{sample}_cpm.bw",
+    log:
+        "results/correlation/{step}/{sample}_cpm.log",
+    threads: max(1, int(workflow.cores * 0.25))
+    params:
+        effective_genome_size=config["deeptools"]["genome_size"],
+        extra=config["deeptools"]["extra"],
+    message:
+        "generate combined coverage files using deeptools"
+    wrapper:
+        "v7.0.0/bio/deeptools/bamcoverage"
+
+
+rule deeptools_plotcoverage:
+    input:
+        bams="results/{step}/{sample}.bam",
+        bais="results/{step}/{sample}.bam.bai",
+    output:
+        plot="results/coverage/{step}/{sample}_coverage.png",
+        raw_counts="results/coverage/{step}/{sample}_coverage.raw",
+        metrics="results/coverage/{step}/{sample}_coverage.metrics",
+    log:
+        "results/coverage/{step}/{sample}_coverage.log",
+    threads: 4
+    params:
+        extra="--coverageThresholds 1",
+    wrapper:
+        "v5.6.0/bio/deeptools/plotcoverage"
+
+
+rule deeptools_multibwsummary:
+    input:
+        bw=get_bw_correlation,
+    output:
+        npz="results/correlation/{step}/bins.npz",
+        counts="results/correlation/{step}/bins.counts",
+    log:
+        "results/correlation/{step}/bins.log",
+    threads: 4
+    params:
+        extra="",
+    wrapper:
+        "v5.6.0/bio/deeptools/multibigwigsummary"
+
+
+rule deeptools_plotcorrelation:
+    input:
+        "results/correlation/{step}/bins.npz",
+    output:
+        plot="results/correlation/{step}/correlation.svg",
+        counts="results/correlation/{step}/correlation.counts",
+    log:
+        "results/correlation/{step}/correlation.log",
+    threads: 1
+    params:
+        extra="--skipZeros",
+        correlation="spearman",
+        plot="heatmap",
+    wrapper:
+        "v5.6.0/bio/deeptools/plotcorrelation"
