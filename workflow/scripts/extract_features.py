@@ -9,7 +9,6 @@ from os import path
 from BCBio.GFF import GFFExaminer
 from BCBio import GFF
 
-
 input_gff = snakemake.input["gff"]
 output_gff = snakemake.output["gff"]
 feature_list = snakemake.params["features"]
@@ -47,6 +46,8 @@ try:
                         error += ["No features found!"]
                     else:
                         rec.features = sel_features
+                        # remove annotation / remarks lines
+                        rec.annotations = {}
                         GFF.write([rec], gff_out)
         except IOError:
             error += [f"Supplied GFF file '{input_gff}' can not be opened"]

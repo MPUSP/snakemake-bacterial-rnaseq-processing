@@ -10,12 +10,12 @@ rule fastp:
         ),
     log:
         "results/fastp/log/{sample}.log",
-    message:
-        "trimming and QC filtering reads using fastp"
-    params:
-        extra=config["fastp"]["extra"],
     threads: max(1, int(workflow.cores * 0.25))
     resources:
         mem_mb=4096,
+    params:
+        extra=config["fastp"]["extra"],
+    message:
+        "trimming and QC filtering reads using fastp"
     wrapper:
         "v7.0.0/bio/fastp"

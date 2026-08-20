@@ -35,6 +35,12 @@ star:
       "--alignIntronMax 1",
     ]
 
+infer_experiment:
+  gffread:
+    extra: ""
+  rseqc:
+    extra: "--sample-size 10000"
+
 samtools:
   sort: ""
   index: ""
