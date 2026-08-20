@@ -85,7 +85,7 @@ properties:
           - "--alignIntronMax 1"
         items:
           type: string
-  
+
   infer_experiment:
     type: object
     properties:
