@@ -1,5 +1,24 @@
 # Changelog
 
+## [2.1.0](https://github.com/MPUSP/snakemake-bacterial-rnaseq-processing/compare/v2.0.0...v2.1.0) (2026-09-22)
+
+
+### Features
+
+* added diagnostics for coverage and correlation ([3999ebe](https://github.com/MPUSP/snakemake-bacterial-rnaseq-processing/commit/3999ebe47d24a0854b7e46b93002de1fb9009d84))
+* added Rseqc infer experiment ([1319983](https://github.com/MPUSP/snakemake-bacterial-rnaseq-processing/commit/1319983174b66fc14b4e446df92b776a9170f81f))
+* container directive, rule format, correlation and coverage plots, infer experiment ([78898da](https://github.com/MPUSP/snakemake-bacterial-rnaseq-processing/commit/78898da81393b48aace99ac76f7e2ac5b5715010))
+
+
+### Bug Fixes
+
+* container directive and rule format ([42ad425](https://github.com/MPUSP/snakemake-bacterial-rnaseq-processing/commit/42ad42596d1cdfc73c01e535c65f556eefe1125c))
+* exposed options for deeptools ([4cb2bd1](https://github.com/MPUSP/snakemake-bacterial-rnaseq-processing/commit/4cb2bd1705583ed9f948255ea2fbf40796150b1f))
+* linting ([6d6b62c](https://github.com/MPUSP/snakemake-bacterial-rnaseq-processing/commit/6d6b62c568c6572ffcc4efaed5123e0749d0ec64))
+* order multiqc sections ([5d19bb9](https://github.com/MPUSP/snakemake-bacterial-rnaseq-processing/commit/5d19bb9ec9e90ba24a1528f588e7175059c17c50))
+* remove annotation remark from gff ([a0d7a07](https://github.com/MPUSP/snakemake-bacterial-rnaseq-processing/commit/a0d7a07fac9dcde6bee02970dfe13bb83c013ecb))
+* update readme + dag ([2e2d6bb](https://github.com/MPUSP/snakemake-bacterial-rnaseq-processing/commit/2e2d6bb016b0815d7f662e704acb2c237947a660))
+
 ## [2.0.0](https://github.com/MPUSP/snakemake-bacterial-rnaseq-processing/compare/v1.4.0...v2.0.0) (2026-04-28)
 
 
