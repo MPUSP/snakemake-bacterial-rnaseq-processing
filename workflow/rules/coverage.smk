@@ -42,9 +42,9 @@ rule deeptools_coverage:
         "results/{step}/log/{sample}_cpm_{strand}.log",
     threads: max(1, int(workflow.cores * 0.25))
     params:
-        effective_genome_size=config["deeptools"]["genome_size"],
+        effective_genome_size=config["deeptools"]["coverage"]["genome_size"],
         extra=lambda wc: (
-            config["deeptools"]["extra"]
+            config["deeptools"]["coverage"]["extra"]
             + f" --filterRNAstrand {('reverse' if(config['libtype']== 'sense' and wc.strand== 'plus') or(config['libtype']== 'antisense' and wc.strand== 'minus') else 'forward')}"
         ),
     message:
@@ -63,8 +63,8 @@ rule deeptools_coverage_combined:
         "results/correlation/{step}/{sample}_cpm.log",
     threads: max(1, int(workflow.cores * 0.25))
     params:
-        effective_genome_size=config["deeptools"]["genome_size"],
-        extra=config["deeptools"]["extra"],
+        effective_genome_size=config["deeptools"]["coverage"]["genome_size"],
+        extra=config["deeptools"]["coverage"]["extra"],
     message:
         "generate combined coverage files using deeptools"
     wrapper:
@@ -83,7 +83,7 @@ rule deeptools_plotcoverage:
         "results/coverage/{step}/{sample}_coverage.log",
     threads: 4
     params:
-        extra="--coverageThresholds 1",
+        extra=config["deeptools"]["plotcoverage"]["extra"],
     wrapper:
         "v5.6.0/bio/deeptools/plotcoverage"
 
@@ -98,7 +98,7 @@ rule deeptools_multibwsummary:
         "results/correlation/{step}/bins.log",
     threads: 4
     params:
-        extra="",
+        extra=config["deeptools"]["multibwsummary"]["extra"],
     wrapper:
         "v5.6.0/bio/deeptools/multibigwigsummary"
 
@@ -113,7 +113,7 @@ rule deeptools_plotcorrelation:
         "results/correlation/{step}/correlation.log",
     threads: 1
     params:
-        extra="--skipZeros",
+        extra=config["deeptools"]["plotcorrelation"]["extra"],
         correlation="spearman",
         plot="heatmap",
     wrapper:

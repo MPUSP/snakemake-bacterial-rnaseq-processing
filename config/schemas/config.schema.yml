@@ -133,14 +133,38 @@ properties:
   deeptools:
     type: object
     properties:
-      genome_size:
-        type: number
-        description: Effective genome size used for coverage normalization.
-        default: 2000000
-      extra:
-        type: string
-        description: Extra options passed to bamCoverage.
-        default: "--binSize 1 --normalizeUsing CPM --exactScaling --extendReads"
+      coverage:
+        type: object
+        properties:
+          genome_size:
+            type: number
+            description: Effective genome size used for coverage normalization.
+            default: 2000000
+          extra:
+            type: string
+            description: Extra options passed to bamCoverage.
+            default: "--binSize 1 --normalizeUsing CPM --exactScaling --extendReads"
+      plotcoverage:
+        type: object
+        properties:
+          extra:
+            type: string
+            description: Extra options passed to plotCoverage.
+            default: "--coverageThresholds 1"
+      multibwsummary:
+        type: object
+        properties:
+          extra:
+            type: string
+            description: Extra options passed to multiBigwigSummary.
+            default: ""
+      plotcorrelation:
+        type: object
+        properties:
+          extra:
+            type: string
+            description: Extra options passed to plotCorrelation.
+            default: "--skipZeros"
   fastqc:
     type: object
     properties:
