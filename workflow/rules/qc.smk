@@ -4,15 +4,15 @@ rule fastqc:
     output:
         html="results/fastqc/{sample}_{read}_fastqc.html",
         zip="results/fastqc/{sample}_{read}_fastqc.zip",
-    params:
-        extra=config["fastqc"]["extra"],
-    message:
-        "--- Checking fastq files with FastQC"
     log:
         "results/fastqc/log/{sample}_{read}.log",
     threads: max(1, int(workflow.cores * 0.25))
     resources:
         mem_mb=4096,
+    params:
+        extra=config["fastqc"]["extra"],
+    message:
+        "--- Checking fastq files with FastQC"
     wrapper:
         "v6.0.0/bio/fastqc"
 
@@ -24,9 +24,9 @@ rule alignment_stats:
         "results/qc/{step}/{sample}.flagstat",
     log:
         "results/qc/{step}/log/{sample}_flagstat.log",
+    threads: max(1, int(workflow.cores * 0.25))
     message:
         "--- Generate mapping statistics of BAM file using samtools."
-    threads: max(1, int(workflow.cores * 0.25))
     wrapper:
         "v7.5.0/bio/samtools/flagstat"
 
@@ -37,10 +37,10 @@ rule qc_biotype_barplot:
         gtf="results/extracted_features/biotypes.gtf",
     output:
         json="results/qc/biotypes/barplot_biotype_data_mqc.json",
-    conda:
-        "../envs/quantify_biotypes.yml"
     log:
         path="results/qc/biotypes/log/extract_biotype_data.log",
+    conda:
+        "../envs/quantify_biotypes.yml"
     message:
         "--- Generate multiqc barplot data for biotype distribution."
     script:
@@ -50,15 +50,15 @@ rule qc_biotype_barplot:
 rule get_conda_envs:
     output:
         "results/versions/log_conda_envs.txt",
+    log:
+        "results/versions/log/log_envs.log",
     conda:
         "../envs/base.yml"
-    message:
-        "--- Extract software version from conda envs."
     params:
         conda_files=" ".join(get_conda_envs_files()),
         conda_envs_log=workflow.source_path("../../resources/conda_envs/conda_envs.log"),
-    log:
-        "results/versions/log/log_envs.log",
+    message:
+        "--- Extract software version from conda envs."
     shell:
         "conda env export > {log}; "
         "if [ '{params.conda_files}' == '' ]; then "
@@ -73,14 +73,14 @@ rule get_software_yaml:
     output:
         yaml="results/versions/rnaseq_preprocessing_mqc_versions.yml",
         multi_conf="results/multiqc/multiqc_config.yml",
-    conda:
-        "../envs/base.yml"
-    message:
-        "--- Generate software version yaml file for MultiQC."
     log:
         path="results/versions/log/yaml_versions.log",
+    conda:
+        "../envs/base.yml"
     params:
         config=config["multiqc"]["config"],
+    message:
+        "--- Generate software version yaml file for MultiQC."
     script:
         "../scripts/get_versions.py"
 
@@ -91,11 +91,11 @@ rule multiqc:
         config="results/multiqc/multiqc_config.yml",
     output:
         report="results/multiqc/multiqc_report.html",
+    log:
+        "results/multiqc/log/multiqc.log",
     params:
         extra=config["multiqc"]["extra"],
     message:
         "--- Generating MultiQC report for seq data"
-    log:
-        "results/multiqc/log/multiqc.log",
     wrapper:
         "v7.5.0/bio/multiqc"

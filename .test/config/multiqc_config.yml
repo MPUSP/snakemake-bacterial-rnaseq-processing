@@ -29,6 +29,7 @@ module_order:
   - fastp
   - star
   - umitools
+  - deeptools
   - featurecounts
+  - custom_content
   - samtools
-  - biotype_dist

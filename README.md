@@ -41,12 +41,13 @@ This workflow is a best-practice workflow for the processing of short read seque
 6. Sort and index aligned RNA-Seq data ([Samtools](http://www.htslib.org/))
 7. Deduplicate reads by unique molecular identifier (UMI, [UMI-tools](https://umi-tools.readthedocs.io/en/latest/))
 8. Generate cpm normalized coverage files ([deepTools](https://deeptools.readthedocs.io/en/latest/))
-9. Quantify biotype features ([featureCounts](https://subread.sourceforge.net/featureCounts.html))
-10. Generate summary report for all processing steps ([MultiQC](https://seqera.io/multiqc/))
+9. Generate global coverage summary ([deepTools](https://deeptools.readthedocs.io/en/latest/))
+10. Quantify biotype features ([featureCounts](https://subread.sourceforge.net/featureCounts.html))
+11. Generate summary report for all processing steps ([MultiQC](https://seqera.io/multiqc/))
 
 ---
 
-![](resources/images/dag.png)
+![](resources/images/dag.svg)
 
 <p>Figure 1: Directed acyclic graph (DAG) of the current workflow steps.</p>
 

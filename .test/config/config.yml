@@ -35,6 +35,12 @@ star:
       "--alignIntronMax 1",
     ]
 
+infer_experiment:
+  gffread:
+    extra: ""
+  rseqc:
+    extra: "--sample-size 10000"
+
 samtools:
   sort: ""
   index: ""
@@ -51,8 +57,15 @@ feature_counts:
     ]
 
 deeptools:
-  genome_size: 2000000
-  extra: "--binSize 1 --normalizeUsing CPM --exactScaling --extendReads"
+  coverage:
+    genome_size: 2000000
+    extra: "--binSize 1 --normalizeUsing CPM --exactScaling --extendReads"
+  plotcoverage:
+    extra: "--coverageThresholds 1"
+  multibwsummary:
+    extra: ""
+  plotcorrelation:
+    extra: "--skipZeros"
 
 fastqc:
   extra: "--quiet --nogroup"
